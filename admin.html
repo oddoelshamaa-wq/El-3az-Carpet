@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام إدارة El 3az Carpet Pro</title>
+    <style>
+        :root { --main: #6366f1; --dark: #1e293b; --light: #f1f5f9; --danger: #ef4444; --green: #10b981; --warning: #f59e0b; --text-gray: #64748b; }
+        :root { --wa-bg: #efe7dd; --wa-header: #008069; --wa-my-msg: #d9fdd3; --wa-their-msg: #ffffff; }
+        
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; transition: all 0.2s ease; }
+        body { display: flex; height: 100vh; margin: 0; background: var(--light); overflow: hidden; }
+
+        /* Login Styles */
+        #loginOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--dark); z-index: 2000; display: flex; justify-content: center; align-items: center; flex-direction: column; color: white; }
+        .login-box { background: white; padding: 40px; border-radius: 20px; width: 350px; text-align: center; color: var(--dark); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        .login-box input { width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #eee; border-radius: 10px; text-align: center; }
+        .login-box button { width: 100%; padding: 12px; background: var(--main); color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 16px; margin-top: 10px; }
+
+        /* Sidebar */
+        aside { width: 260px; background: var(--dark); color: white; padding: 20px; display: flex; flex-direction: column; box-shadow: 4px 0 10px rgba(0,0,0,0.1); overflow-y: auto; }
+        aside h2 { text-align: center; margin-bottom: 20px; color: var(--main); letter-spacing: 2px; font-weight: 800; }
+        .user-info { text-align: center; padding: 10px; background: rgba(255,255,255,0.1); border-radius: 10px; margin-bottom: 20px; font-size: 13px; }
+        .menu-btn { padding: 12px; margin: 5px 0; cursor: pointer; border-radius: 10px; display: flex; align-items: center; gap: 10px; color: #cbd5e1; font-size: 14px; }
+        .menu-btn:hover, .menu-btn.active { background: rgba(255,255,255,0.1); color: white; transform: translateX(-5px); }
+        .menu-btn.active { border-right: 4px solid var(--main); }
+
+        /* Main Content */
+        main { flex: 1; padding: 25px; overflow-y: auto; position: relative; }
+        .section { display: none; animation: fadeIn 0.4s; }
+        .section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Cards & Inputs */
+        .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.03); margin-bottom: 20px; border: 1px solid #f1f5f9; }
+        h3 { margin-bottom: 15px; color: var(--dark); border-bottom: 2px solid #f1f5f9; padding-bottom: 10px; font-size: 18px; display: flex; align-items: center; gap: 8px; }
+        
+        input, select, textarea { width: 100%; padding: 10px; margin-bottom: 10px; border: 2px solid #e2e8f0; border-radius: 8px; outline: none; font-size: 14px; background: #fff; }
+        input:focus, select:focus, textarea:focus { border-color: var(--main); background: #fff; }
+        
+        button.action-btn { background: var(--main); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; margin-left: 5px; display: inline-flex; align-items: center; justify-content: center; gap: 5px; }
+        button.action-btn:hover { background: #4f46e5; }
+        button.action-btn.danger { background: var(--danger); }
+        button.action-btn.secondary { background: var(--text-gray); }
+
+        /* Stats Grid */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 25px; }
+        .stat-card { padding: 20px; border-radius: 15px; color: white; position: relative; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .stat-card h1 { margin: 5px 0 0; font-size: 28px; }
+        .bg-blue { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); }
+        .bg-green { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+        .bg-orange { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
+        .bg-purple { background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); }
+
+        /* Tables */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px; }
+        th { text-align: right; color: var(--text-gray); padding: 12px; border-bottom: 2px solid #e2e8f0; background: #f8fafc; }
+        td { padding: 12px; border-bottom: 1px solid #f1f5f9; color: var(--dark); vertical-align: middle; }
+        .clickable-row { cursor: pointer; transition: 0.2s; }
+        .clickable-row:hover { background-color: #f8fafc; transform: scale(1.002); }
+
+        /* Product Variant Styles (NEW) */
+        .variant-container { background: #f8fafc; padding: 15px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #e2e8f0; }
+        .variant-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 5px; border-bottom: 1px dashed #cbd5e1; }
+        .variant-header label { font-weight: bold; color: var(--dark); font-size: 15px; }
+        
+        .variant-list { display: flex; flex-direction: column; gap: 10px; }
+        .variant-row { display: grid; grid-template-columns: 1fr 2fr 40px 40px; gap: 10px; align-items: center; background: white; padding: 8px; border-radius: 8px; border: 1px solid #eee; }
+        
+        .color-preview { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; border: 1px solid #ddd; }
+        .product-thumb { width: 80px; height: 80px; object-fit: cover; border-radius: 12px; border: 1px solid #e5e7eb; background: #f8fafc; }
+        .btn-icon { background: #fee2e2; color: #ef4444; border: none; width: 35px; height: 35px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+        .btn-icon:hover { background: #fecaca; }
+        .btn-add { font-size: 12px; padding: 6px 12px; margin-top: 5px; background: #e0f2fe; color: #0284c7; }
+        .btn-add:hover { background: #bae6fd; }
+
+        /* Order Cards */
+        /* تصميم بطاقة الطلب الجديد مطابق للصورة */
+.order-card {
+    background: #fff;
+    border: 1px solid #eef2f6;
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    position: relative;
+    border-right: 5px solid #6366f1; /* الخط الملون الجانبي */
+}
+
+.order-info-right {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.order-info-right strong {
+    font-size: 18px;
+    color: #1e293b;
+}
+
+.order-info-right small {
+    color: #94a3b8;
+    font-size: 14px;
+}
+
+.order-price-left {
+    color: #10b981;
+    font-weight: 800;
+    font-size: 22px;
+    min-width: 120px;
+}
+
+.order-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+/* ألوان الأزرار كما في الصورة */
+.btn-ship { background: #6366f1 !important; color: white; }
+.btn-cancel { background: #ef4444 !important; color: white; }
+.btn-details { background: #64748b !important; color: white; }
+
+.action-btn-custom {
+    border: none;
+    padding: 8px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 14px;
+}
+
+        /* Modal */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; display: none; justify-content: center; align-items: center; backdrop-filter: blur(3px); }
+        .modal-content { background: white; width: 90%; max-width: 600px; padding: 25px; border-radius: 15px; animation: scaleUp 0.3s; position: relative; max-height: 90vh; overflow-y: auto; }
+        @keyframes scaleUp { from{transform:scale(0.9); opacity:0} to{transform:scale(1); opacity:1} }
+
+        /* Filters */
+        .filter-bar { display: flex; gap: 10px; flex-wrap: wrap; background: #f0f9ff; padding: 15px; border-radius: 10px; margin-bottom: 20px; align-items: flex-end; border: 1px solid #bae6fd; }
+        .filter-group { display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 150px; }
+        .filter-group label { font-size: 12px; font-weight: bold; color: #0284c7; }
+
+        /* Chat */
+        .chat-layout { display: grid; grid-template-columns: 1fr 2fr; gap: 0; height: 500px; border: 1px solid #ddd; border-radius: 0; overflow: hidden; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .chat-sidebar { border-left: 1px solid #eee; overflow-y: auto; background: white; }
+        .chat-main { display: flex; flex-direction: column; background-color: var(--wa-bg); background-image: url("https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png"); background-blend-mode: overlay; position: relative; }
+        #chatHeader { padding: 10px 15px; background: #f0f2f5; border-bottom: 1px solid #ddd; font-weight: bold; color: #333; display: flex; align-items: center; gap: 10px; height: 60px; }
+        .chat-user-item { padding: 15px; border-bottom: 1px solid #f0f0f0; cursor: pointer; display: flex; flex-direction: column; gap: 5px; }
+        .chat-user-item:hover { background: #f5f6f6; }
+        .chat-user-item.active { background: #e9edef; border-right: 4px solid var(--wa-header); }
+        .chat-msgs-box { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 5px; }
+        .msg { padding: 8px 12px; border-radius: 7px; max-width: 70%; font-size: 14px; position: relative; box-shadow: 0 1px 1px rgba(0,0,0,0.1); line-height: 1.4; }
+        .msg.admin { align-self: flex-end; background: var(--wa-my-msg); color: #111; border-top-left-radius: 7px; border-top-right-radius: 0; margin-right: 5px; }
+        .msg.admin::after { content: ""; position: absolute; top: 0; right: -10px; width: 0; height: 0; border: 10px solid transparent; border-top-color: var(--wa-my-msg); border-left: 0; border-bottom: 0; margin-top: 0; margin-right: 0; }
+        .msg.user { align-self: flex-start; background: var(--wa-their-msg); color: #111; border-top-left-radius: 0; margin-left: 5px; }
+        .msg.user::after { content: ""; position: absolute; top: 0; left: -10px; width: 0; height: 0; border: 10px solid transparent; border-top-color: var(--wa-their-msg); border-right: 0; border-bottom: 0; margin-top: 0; margin-left: 0; transform: scaleX(-1); }
+        .chat-input-area { padding: 10px; background: #f0f2f5; display: flex; align-items: center; gap: 10px; }
+        .chat-input-area input { margin: 0; border-radius: 20px; border: none; padding: 12px 20px; flex: 1; }
+        .chat-input-area button { margin: 0; border-radius: 50%; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; padding: 0; font-size: 20px; }
+
+        /* Toast Notification */
+        #toast-container { position: fixed; bottom: 20px; left: 20px; z-index: 3000; display: flex; flex-direction: column; gap: 10px; }
+        .toast { background: #333; color: white; padding: 12px 24px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 10px; animation: slideIn 0.3s forwards; min-width: 250px; }
+        .toast.success { background: var(--green); }
+        .toast.error { background: var(--danger); }
+        .toast.warning { background: var(--warning); }
+        @keyframes slideIn { from { transform: translateX(-100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes slideOut { to { transform: translateX(-100%); opacity: 0; } }
+    </style>
+</head>
+<body>
+
+<div id="toast-container"></div>
+
+<div id="loginOverlay">
+    <div class="login-box">
+        <h2 style="color:var(--main); margin-bottom:5px;">El 3az Carpet Pro</h2>
+        <p style="margin-top:0; color:#666; font-size:14px;">نظام الإدارة المركزي (V2)</p>
+        <input type="text" id="loginUser" placeholder="اسم المستخدم">
+        <input type="password" id="loginPass" placeholder="كلمة المرور">
+        <button onclick="window.funcs.login()">دخول للنظام 🔐</button>
+        <p style="font-size:12px; margin-top:15px; color:#888;">الافتراضي: admin / 123</p>
+    </div>
+</div>
+
+<aside id="mainSidebar" style="display:none;">
+    <h2>EL 3AZ CARPET</h2>
+    <div class="user-info">
+        <span id="currentUserDisplay">Admin</span><br>
+        <small id="currentRoleDisplay" style="color:var(--green)">Online</small>
+    </div>
+    <div class="menu-btn active" data-role="all" onclick="window.funcs.showSection('stats', this)">📊 الإحصائيات</div>
+    <div class="menu-btn" data-role="all" onclick="window.funcs.showSection('orders', this)">💰 الطلبات الحالية <span id="alertBadge" style="background:red;border-radius:50%;padding:2px 6px;font-size:10px;display:none;margin-right:5px;">!</span></div>
+    <div class="menu-btn" data-role="admin,manager" onclick="window.funcs.showSection('archive', this)">🗄️ أرشيف الطلبات</div>
+    <div class="menu-btn" data-role="admin,manager" onclick="window.funcs.showSection('add-product', this)">📦 المخزون والمنتجات</div>
+    <div class="menu-btn" data-role="admin,manager" onclick="window.funcs.showSection('categories', this)">🗂️ إدارة الأقسام</div>
+    <div class="menu-btn" data-role="admin" onclick="window.funcs.showSection('users', this)">👥 إدارة الموظفين</div>
+    <div class="menu-btn" data-role="admin,manager" onclick="window.funcs.showSection('reports', this)">📈 تقارير الأداء</div>
+    <div class="menu-btn" data-role="all" onclick="window.funcs.showSection('messages', this)">💬 واتساب العملاء</div>
+    <div style="margin-top:auto;">
+        <button onclick="window.funcs.logout()" style="width:100%; background:rgba(255,255,255,0.1); border:none; color:white; padding:10px; cursor:pointer; border-radius:10px;">تسجيل خروج 🚪</button>
+    </div>
+</aside>
+
+<main id="mainContent" style="display:none;">
+    
+    <div id="stats" class="section active">
+        <h2 style="color:var(--dark)">لوحة القيادة</h2>
+        <div class="stats-grid">
+            <div class="stat-card bg-green"> <p>المبيعات (المحصلة)</p> <h1 id="statRevenue">0</h1> </div>
+            <div class="stat-card bg-blue"> <p>الطلبات النشطة</p> <h1 id="statOrders">0</h1> </div>
+            <div class="stat-card bg-purple"> <p>الطلبات المؤرشفة</p> <h1 id="statArchived">0</h1> </div>
+            <div class="stat-card bg-orange"> <p>عدد الموظفين</p> <h1 id="statUsers">0</h1> </div>
+        </div>
+        <div class="card">
+            <h3>🔥 الأكثر مبيعاً</h3>
+            <div id="topSellersList"></div>
+        </div>
+    </div>
+
+    <div id="orders" class="section">
+        <div class="card">
+            <h3>الطلبات قيد التنفيذ</h3>
+            <div id="ordersList">جاري التحميل...</div>
+        </div>
+    </div>
+
+    <div id="archive" class="section">
+        <div class="card">
+            <h3>🗄️ سجل الطلبات (بحث متقدم)</h3>
+            <div class="filter-bar">
+                <div class="filter-group"><label>تصفية حسب الموظف:</label><select id="archiveFilterEmp" onchange="window.funcs.renderArchive()"><option value="">-- كل الموظفين --</option></select></div>
+                <div class="filter-group"><label>من تاريخ:</label><input type="date" id="archiveFilterFrom" onchange="window.funcs.renderArchive()"></div>
+                <div class="filter-group"><label>إلى تاريخ:</label><input type="date" id="archiveFilterTo" onchange="window.funcs.renderArchive()"></div>
+                <div class="filter-group" style="justify-content: flex-end; flex:0;"><button class="action-btn secondary" onclick="window.funcs.resetArchiveFilters()">إلغاء ❌</button></div>
+            </div>
+            <div style="overflow-x:auto;">
+                <table><thead><tr><th>رقم الطلب</th><th>العميل</th><th>المبلغ</th><th>الحالة</th><th>تم بواسطة</th><th>التاريخ</th></tr></thead><tbody id="archiveTableBody"></tbody></table>
+            </div>
+        </div>
+    </div>
+
+    <div id="add-product" class="section">
+        <div class="card">
+            <h3>إضافة منتج جديد</h3>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <input type="text" id="pName" placeholder="اسم المنتج" style="flex:2">
+                <input type="number" id="pPrice" placeholder="السعر الأساسي" style="flex:1">
+                <input type="number" id="pDiscount" placeholder="السعر بعد الخصم (اختياري)" style="flex:1; border-color:var(--warning)">
+                <!-- Quantity removed from here as it will be calculated from sizes -->
+            </div>
+
+            <!-- Color Variants UI -->
+            <div class="variant-container">
+                <div class="variant-header">
+                    <label>🎨 ألوان المنتج (مع صور)</label>
+                    <button class="action-btn btn-add" onclick="window.funcs.addColorRow()">+ إضافة لون</button>
+                </div>
+                <div id="colorVariantsList" class="variant-list">
+                    <!-- Dynamic Rows will appear here -->
+                </div>
+            </div>
+
+            <!-- Size Variants UI -->
+            <div class="variant-container">
+                <div class="variant-header">
+                    <label>📏 المقاسات والكميات</label>
+                    <button class="action-btn btn-add" onclick="window.funcs.addSizeRow()">+ إضافة مقاس</button>
+                </div>
+                <div id="sizeVariantsList" class="variant-list">
+                    <!-- Dynamic Rows will appear here -->
+                </div>
+                <div style="text-align:left; font-size:12px; color:#666; margin-top:5px;">
+                    * اكتب المقاس والكمية بوضوح (مثال: 30x40 – 5 قطع)، وسيحسب المخزون الكلي تلقائياً.
+                </div>
+            </div>
+
+            <textarea id="pDesc" placeholder="اكتب وصف المنتج وتفاصيله هنا..." rows="3"></textarea>
+            <div style="border:2px dashed #e2e8f0; padding:20px; border-radius:12px; text-align:center; margin-bottom:15px; background:#f8fafc;">
+                <img id="mainImagePreview" src="https://placehold.co/200x200?text=📷" alt="معاينة المنتج" style="width:200px; height:200px; border-radius:12px; margin:0 auto 15px; background:#eee; object-fit:cover; display:block;" />
+                <input type="file" id="mainImageInput" accept="image/*" style="display:none;">
+                <label for="mainImageInput" class="action-btn" style="display:inline-flex; align-items:center; gap:8px; cursor:pointer;">📁 اختر صورة المنتج</label>
+                <div id="mainImageUrl" style="font-size:12px; color:#666; margin-top:8px; direction:ltr; word-break:break-all;"></div>
+                <button id="uploadMainImageBtn" class="action-btn" style="margin-top:10px; background:var(--warning); display:none;" disabled>رفع الصورة ⬆️</button>
+                <div id="mainUploadProgress" style="margin-top:5px; font-size:12px; color:var(--warning); display:none;"></div>
+            </div>
+            <input type="hidden" id="mainImageUrlHidden">
+            <div style="display:flex; gap:10px;">
+                <select id="pCategory" onchange="window.funcs.updateSubCatsDropdown()"></select>
+                <select id="pSubCategory"></select>
+            </div>
+            <button class="action-btn" onclick="window.funcs.addProduct()">إضافة للمخزون</button>
+        </div>
+        <div class="card">
+            <h3>📋 جدول المخزون</h3>
+            <div style="overflow-x:auto;">
+                <table id="productsTable"><thead><tr><th>صورة</th><th>المنتج</th><th>الألوان</th><th>المقاسات (الكميات)</th><th>القسم</th><th>السعر</th><th>التحكم</th></tr></thead><tbody id="productsTableBody"></tbody></table>
+            </div>
+        </div>
+    </div>
+
+    <div id="categories" class="section">
+        <div class="card">
+            <h3>إضافة قسم رئيسي</h3>
+            <div style="display:flex; gap:10px;">
+                <input type="text" id="newMainCat" placeholder="اسم القسم.." style="flex:1">
+                <button class="action-btn" onclick="window.funcs.addMainCat()">إضافة</button>
+            </div>
+            <div id="mainCatList" style="margin-top:20px;"></div>
+        </div>
+        <div class="card">
+            <h3>إضافة قسم فرعي</h3>
+            <div style="display:flex; gap:10px;">
+                <select id="targetMainCat" style="flex:1"></select>
+                <input type="text" id="newSubCat" placeholder="اسم الفرع.." style="flex:1">
+                <button class="action-btn" onclick="window.funcs.addSubCat()">إضافة</button>
+            </div>
+            <div id="subCatList" style="margin-top:20px;"></div>
+        </div>
+    </div>
+
+    <div id="users" class="section">
+        <div class="card">
+            <h3>👥 إضافة موظف جديد</h3>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <input type="text" id="uName" placeholder="الاسم الحقيقي" style="flex:1">
+                <input type="text" id="uUser" placeholder="اسم المستخدم" style="flex:1">
+                <input type="text" id="uPass" placeholder="كلمة المرور" style="flex:1">
+                <select id="uRole" style="flex:1"><option value="seller">بائع</option><option value="manager">مدير</option><option value="admin">أدمن</option></select>
+                <button class="action-btn" onclick="window.funcs.addUser()">إنشاء حساب</button>
+            </div>
+        </div>
+        <div class="card">
+            <h3>قائمة الموظفين</h3>
+            <table id="usersTable"><thead><tr><th>الاسم</th><th>المستخدم</th><th>الصلاحية</th><th>حذف</th></tr></thead><tbody id="usersTableBody"></tbody></table>
+        </div>
+    </div>
+
+    <div id="reports" class="section">
+        <div class="card">
+            <h3>📈 تقرير الأداء (مفلتر)</h3>
+            <div class="filter-bar">
+                <div class="filter-group"><label>اختر الموظف:</label><select id="reportFilterEmp" onchange="window.funcs.renderReports()"><option value="">-- الكل --</option></select></div>
+                <div class="filter-group"><label>من تاريخ:</label><input type="date" id="reportFilterFrom" onchange="window.funcs.renderReports()"></div>
+                <div class="filter-group"><label>إلى تاريخ:</label><input type="date" id="reportFilterTo" onchange="window.funcs.renderReports()"></div>
+                <div class="filter-group" style="justify-content: flex-end; flex:0;"><button class="action-btn secondary" onclick="window.funcs.resetReportFilters()">إلغاء</button></div>
+            </div>
+            <table id="reportsTable"><thead><tr><th>الموظف</th><th>عدد الطلبات المكتملة</th><th>إجمالي المبيعات المحققة</th></tr></thead><tbody id="reportsTableBody"></tbody></table>
+        </div>
+    </div>
+
+    <div id="messages" class="section">
+        <div class="card" style="padding:0; overflow:hidden;">
+            <div class="chat-layout">
+                <div class="chat-sidebar" id="chatSidebar"></div>
+                <div class="chat-main">
+                    <div id="chatHeader">
+                        <img src="https://placehold.co/40" style="border-radius:50%">
+                        <div><div id="chatHeaderName">اختر محادثة</div><small id="chatHeaderStatus" style="font-weight:normal; color:#666;">...</small></div>
+                    </div>
+                    <div class="chat-msgs-box" id="adminChatBox"></div>
+                    <div class="chat-input-area">
+                        <input type="text" id="adminChatInput" placeholder="اكتب رسالة..." disabled>
+                        <button class="action-btn" id="adminChatBtn" onclick="window.funcs.sendAdminReply()" disabled>➤</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+<div class="modal-overlay" id="orderDetailModal">
+    <div class="modal-content">
+        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #eee; padding-bottom:10px; margin-bottom:15px;">
+            <h3 style="margin:0; border:none;">تفاصيل الطلب (الفاتورة)</h3>
+            <button onclick="document.getElementById('orderDetailModal').style.display='none'" style="background:none; border:none; font-size:20px; cursor:pointer;">&times;</button>
+        </div>
+        <div id="orderDetailContent"></div>
+        <div style="text-align:left; margin-top:20px;"><button class="action-btn secondary" onclick="document.getElementById('orderDetailModal').style.display='none'">إغلاق</button></div>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, collection, getDocs, addDoc, doc, setDoc, getDoc, deleteDoc, updateDoc, onSnapshot, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyC-WunzZkXYOeXNAKtFgnti0suXbvU74FY",
+        authDomain: "stoer-elshamaa.firebaseapp.com",
+        projectId: "stoer-elshamaa",
+        storageBucket: "stoer-elshamaa.firebasestorage.app",
+        messagingSenderId: "566386579692",
+        appId: "1:566386579692:web:c8b293e634b5cb62c5adc9",
+        measurementId: "G-P2JFPZ7LTL"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+
+    const beep = new Audio("https://actions.google.com/sounds/v1/alarms/beep_short.ogg"); 
+    let currentUser = null;
+    let lastOrderCount = 0;
+    let selectedChatUser = null;
+    
+    let allProducts = [];
+    let allOrders = [];
+    let allArchive = [];
+    let allUsers = [];
+    let allChats = [];
+    let categoriesData = {};
+
+    // Utils: Toast Notification
+    function showToast(msg, type = 'success') {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.innerHTML = type === 'success' ? `✅ ${msg}` : `⚠️ ${msg}`;
+        container.appendChild(toast);
+        setTimeout(() => {
+            toast.style.animation = 'slideOut 0.3s forwards';
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+
+    window.funcs = {
+        login: () => login(),
+        logout: () => logout(),
+        showSection: (id, btn) => showSection(id, btn),
+        addProduct: () => addProduct(),
+        updateSubCatsDropdown: () => updateSubCatsDropdown(),
+        addMainCat: () => addMainCat(),
+        addSubCat: () => addSubCat(),
+        delMainCat: (k) => delMainCat(k),
+        delSubCat: (m,s) => delSubCat(m,s),
+        addUser: () => addUser(),
+        delUser: (id) => delUser(id),
+        updateOrderStatus: (id, st) => updateOrderStatus(id, st),
+        renderArchive: () => renderArchive(),
+        resetArchiveFilters: () => resetArchiveFilters(),
+        renderReports: () => renderReports(),
+        resetReportFilters: () => resetReportFilters(),
+        openOrderDetailModal: (id, src) => openOrderDetailModal(id, src),
+        delProd: (id) => delProd(id),
+        openChat: (p) => openChat(p),
+        sendAdminReply: () => sendAdminReply(),
+        // New UI Helpers
+        addColorRow: () => addColorRow(),
+        addSizeRow: () => addSizeRow(),
+        removeRow: (el) => el.parentElement.remove()
+    };
+
+    window.addEventListener('load', () => {
+        const session = localStorage.getItem('elshamaaSession');
+        if(session) grantAccess(JSON.parse(session));
+        
+        // Image upload handlers
+        setupMainImageHandlers();
+        
+        // Initialize with default empty inputs or one row
+        addColorRow();
+        addSizeRow();
+    });
+
+    // Image upload functions
+    async function uploadImage(file, progressEl, urlEl) {
+        if (!file) return;
+        
+        const storageRef = ref(storage, `products/${Date.now()}_${file.name}`);
+        const uploadTask = uploadBytesResumable(storageRef, file);
+        
+        return new Promise((resolve, reject) => {
+            uploadTask.on('state_changed',
+                (snapshot) => {
+                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    if (progressEl) progressEl.textContent = `جاري الرفع... ${Math.round(progress)}%`;
+                },
+                (error) => {
+                    showToast('خطأ في رفع الصورة', 'error');
+                    reject(error);
+                },
+                async () => {
+                    const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                    if (urlEl) urlEl.value = downloadURL;
+                    if (progressEl) progressEl.textContent = 'تم الرفع ✅';
+                    showToast('تم رفع الصورة بنجاح');
+                    resolve(downloadURL);
+                }
+            );
+        });
+    }
+
+    function previewImage(file, previewEl) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            previewEl.src = e.target.result;
+            previewEl.style.objectFit = 'cover';
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function setupMainImageHandlers() {
+        const input = document.getElementById('mainImageInput');
+        const preview = document.getElementById('mainImagePreview');
+        const urlDisplay = document.getElementById('mainImageUrl');
+        const uploadBtn = document.getElementById('uploadMainImageBtn');
+        const progress = document.getElementById('mainUploadProgress');
+        const hiddenUrl = document.getElementById('mainImageUrlHidden');
+
+        input.onchange = async (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                previewImage(file, preview);
+                preview.style.borderRadius = '12px';
+                uploadBtn.style.display = 'inline-flex';
+                uploadBtn.disabled = true;
+                uploadBtn.textContent = 'جارٍ رفع الصورة...';
+                urlDisplay.textContent = 'جارٍ رفع الصورة...';
+                progress.style.display = 'block';
+
+                try {
+                    await uploadImage(file, progress, hiddenUrl);
+                    urlDisplay.textContent = 'تم رفع الصورة بنجاح';
+                    uploadBtn.style.display = 'none';
+                } catch (err) {
+                    console.error('main image upload failed', err);
+                    urlDisplay.textContent = 'فشل رفع الصورة، اضغط لإعادة المحاولة';
+                    uploadBtn.style.display = 'inline-flex';
+                    uploadBtn.disabled = false;
+                    uploadBtn.textContent = 'رفع الصورة ⬆️';
+                }
+            }
+        };
+
+        uploadBtn.onclick = async () => {
+            const file = input.files[0];
+            if (!file) return;
+            
+            uploadBtn.disabled = true;
+            uploadBtn.textContent = 'جاري الرفع...';
+            progress.style.display = 'block';
+            
+            try {
+                await uploadImage(file, progress, hiddenUrl);
+                urlDisplay.textContent = hiddenUrl.value;
+            } catch (e) {
+                console.error(e);
+                urlDisplay.textContent = 'فشل رفع الصورة، حاول مرة أخرى';
+            } finally {
+                uploadBtn.disabled = false;
+                uploadBtn.textContent = 'رفع الصورة ⬆️';
+                setTimeout(() => { progress.style.display = 'none'; }, 2000);
+            }
+        };
+    }
+
+    function previewColorImageFile(fileInput, previewEl, hiddenUrlEl) {
+        const file = fileInput.files[0];
+        if (file) {
+            previewImage(file, previewEl);
+            // Auto-upload color images (smaller files)
+            setTimeout(async () => {
+                try {
+                    await uploadImage(file, null, hiddenUrlEl);
+                    previewEl.title = 'تم رفع الصورة';
+                } catch (e) {
+                    console.error('Color upload failed:', e);
+                }
+            }, 500);
+        }
+    }
+
+    // UI Functions for Dynamic Rows
+    function addColorRow() {
+        const container = document.getElementById('colorVariantsList');
+        const div = document.createElement('div');
+        div.className = 'variant-row';
+        div.innerHTML = `
+            <input type="text" class="c-name" placeholder="اسم اللون (مثال: أحمر)">
+            <div style="display:flex; gap:5px; align-items:center;">
+                <input type="file" class="c-img-file" accept="image/*" style="display:none;">
+                <label for="" class="c-img-label" style="background:#e0f2fe; color:#0284c7; padding:4px 8px; border-radius:6px; font-size:12px; cursor:pointer; border:1px solid #bae6fd;">📁 صورة</label>
+                <input type="hidden" class="c-img-url" value="">
+            </div>
+            <img src="https://placehold.co/30" class="color-preview" style="width:30px;height:30px;border-radius:50%;">
+            <button class="btn-icon" onclick="window.funcs.removeRow(this)">×</button>
+        `;
+        // Add event listeners for new row
+        const fileInput = div.querySelector('.c-img-file');
+        const label = div.querySelector('.c-img-label');
+        const preview = div.querySelector('.color-preview');
+        const hiddenUrl = div.querySelector('.c-img-url');
+        
+        label.onclick = () => fileInput.click();
+        fileInput.onchange = () => previewColorImageFile(fileInput, preview, hiddenUrl);
+        container.appendChild(div);
+    }
+
+    function previewColorImage(input) {
+        const preview = input.parentElement.querySelector('.color-preview');
+        preview.src = input.value || 'https://placehold.co/30';
+    }
+
+    function addSizeRow() {
+        const container = document.getElementById('sizeVariantsList');
+        const div = document.createElement('div');
+        div.className = 'variant-row';
+        div.innerHTML = `
+            <input type="text" class="s-name" placeholder="المقاس (مثال: 30x40 أو L)">
+            <input type="number" class="s-qty" placeholder="الكمية" min="0" value="1">
+            <div style="width:40px"></div> <!-- Spacer -->
+            <button class="btn-icon" onclick="window.funcs.removeRow(this)">×</button>
+        `;
+        container.appendChild(div);
+    }
+
+    async function login() {
+        const u = document.getElementById('loginUser').value;
+        const p = document.getElementById('loginPass').value;
+        
+        if(u === "admin" && p === "123") {
+            const adminUser = { id: 'master', name: "المدير العام", user: "admin", role: "admin" };
+            localStorage.setItem('elshamaaSession', JSON.stringify(adminUser));
+            grantAccess(adminUser);
+            return;
+        }
+
+        try {
+            const q = query(collection(db, "system_users"), where("user", "==", u), where("pass", "==", p));
+            const snap = await getDocs(q);
+            if(!snap.empty) {
+                const user = { id: snap.docs[0].id, ...snap.docs[0].data() };
+                localStorage.setItem('elshamaaSession', JSON.stringify(user));
+                grantAccess(user);
+            } else {
+                showToast("بيانات الدخول غير صحيحة", "error");
+            }
+        } catch(e) { console.error(e); showToast("خطأ في الاتصال", "error"); }
+    }
+
+    function grantAccess(user) {
+        currentUser = user;
+        document.getElementById('loginOverlay').style.display = 'none';
+        document.getElementById('mainSidebar').style.display = 'flex';
+        document.getElementById('mainContent').style.display = 'block';
+        document.getElementById('currentUserDisplay').innerText = user.name;
+        document.getElementById('currentRoleDisplay').innerText = user.role.toUpperCase();
+        
+        setupPermissions(user.role);
+        startRealtimeListeners();
+    }
+
+    function logout() { localStorage.removeItem('elshamaaSession'); location.reload(); }
+
+    function setupPermissions(role) {
+        document.querySelectorAll('.menu-btn').forEach(btn => {
+            const allowed = btn.getAttribute('data-role');
+            btn.style.display = (allowed === 'all' || allowed.includes(role)) ? 'flex' : 'none';
+        });
+    }
+
+    function startRealtimeListeners() {
+        onSnapshot(collection(db, "products"), (snap) => {
+            allProducts = snap.docs.map(d => ({id: d.id, ...d.data()}));
+            renderProducts(); renderStats();
+        });
+
+        onSnapshot(collection(db, "orders"), (snap) => {
+            allOrders = snap.docs.map(d => ({id: d.id, ...d.data()}));
+            checkNewOrders(allOrders);
+            renderOrders(); renderStats();
+        });
+
+        const qArch = query(collection(db, "archive"), orderBy("timestamp", "desc"));
+        onSnapshot(qArch, (snap) => {
+            allArchive = snap.docs.map(d => ({id: d.id, ...d.data()}));
+            renderStats();
+            if(document.getElementById('archive').classList.contains('active')) renderArchive();
+            if(document.getElementById('reports').classList.contains('active')) renderReports();
+        });
+
+        onSnapshot(doc(db, "settings", "categories"), (doc) => {
+            if(doc.exists()) {
+                categoriesData = doc.data();
+                renderCategoryUI();
+            }
+        });
+
+        if(currentUser.role === 'admin') {
+            onSnapshot(collection(db, "system_users"), (snap) => {
+                allUsers = snap.docs.map(d => ({id: d.id, ...d.data()}));
+                renderUsers(); renderStats();
+                populateEmpFilter();
+            });
+        }
+
+        onSnapshot(collection(db, "chats"), (snap) => {
+            allChats = snap.docs.map(d => ({id: d.id, ...d.data()}));
+            renderChatList();
+            if(selectedChatUser) {
+                const c = allChats.find(x => x.id === selectedChatUser);
+                if(c) renderChatBox(c.messages || []);
+            }
+        });
+    }
+
+    function checkNewOrders(orders) {
+        const hasPending = orders.some(o => o.status === 'pending' || o.status === 'cancel_requested');
+        document.getElementById('alertBadge').style.display = hasPending ? 'inline-block' : 'none';
+        if(hasPending && orders.length > lastOrderCount) {
+             beep.play().catch(e=>{});
+        }
+        lastOrderCount = orders.length;
+    }
+
+    async function addProduct() {
+        try {
+            const name = document.getElementById('pName').value;
+            const price = document.getElementById('pPrice').value;
+            const discount = document.getElementById('pDiscount').value;
+            const cat = document.getElementById('pCategory').value;
+            const sub = document.getElementById('pSubCategory').value;
+            const desc = document.getElementById('pDesc').value;
+            const mainImageUrl = document.getElementById('mainImageUrlHidden').value;
+            const previewSrc = document.getElementById('mainImagePreview').src;
+            let img = mainImageUrl || '';
+            if (!img && previewSrc && !previewSrc.includes('placehold.co')) {
+                img = previewSrc;
+            }
+
+            if(!name || !price) return showToast("الاسم والسعر مطلوبان", "error");
+
+            // Collect Colors Objects
+            const colorRows = document.querySelectorAll('#colorVariantsList .variant-row');
+            let colors = [];
+            for(const row of colorRows) {
+                const cName = row.querySelector('.c-name').value;
+                const cImgUrl = row.querySelector('.c-img-url');
+                const cImg = cImgUrl ? cImgUrl.value : '';
+                if(cName) colors.push({ name: cName, img: cImg });
+            }
+
+            // Collect Sizes Objects & Calculate Total Quantity
+            const sizeRows = document.querySelectorAll('#sizeVariantsList .variant-row');
+            let sizes = [];
+            let totalQuantity = 0;
+            sizeRows.forEach(row => {
+                const sName = row.querySelector('.s-name').value;
+                const sQty = parseInt(row.querySelector('.s-qty').value) || 0;
+                if(sName) {
+                    sizes.push({ name: sName, qty: sQty });
+                    totalQuantity += sQty;
+                }
+            });
+
+            await addDoc(collection(db, "products"), {
+                name, price, discountPrice: discount, quantity: totalQuantity, 
+                category: cat, subCategory: sub, description: desc, img, sold: 0,
+                colors: colors,
+                sizes: sizes
+            });
+
+            // Reset Form
+            document.getElementById('pName').value = "";
+            document.getElementById('pPrice').value = "";
+            document.getElementById('pDiscount').value = "";
+            document.getElementById('pDesc').value = "";
+            document.getElementById('mainImageUrlHidden').value = "";
+            document.getElementById('mainImageInput').value = "";
+            document.getElementById('mainImagePreview').src = 'https://placehold.co/200x200?text=📷';
+            document.getElementById('mainImageUrl').textContent = '';
+            document.getElementById('uploadMainImageBtn').style.display = 'none';
+            document.getElementById('colorVariantsList').innerHTML = "";
+            document.getElementById('sizeVariantsList').innerHTML = "";
+            addColorRow();
+            addSizeRow();
+            
+            showToast("تمت إضافة المنتج بنجاح");
+        } catch(e) {
+            console.error('addProduct error', e);
+            showToast("فشل حفظ المنتج، تأكد من الاتصال وإعدادات Firebase", "error");
+        }
+    }
+
+    function renderProducts() {
+        let tbody = document.getElementById('productsTableBody');
+        tbody.innerHTML = "";
+        allProducts.forEach((p) => { 
+            let priceDisplay = `${p.price}`;
+            if(p.discountPrice) priceDisplay = `<span class="old-price">${p.price}</span> <span class="new-price">${p.discountPrice}</span>`;
+            
+            // Render Colors as Images
+            let colorsHtml = "";
+            if(p.colors && p.colors.length) {
+                p.colors.forEach(c => {
+                    colorsHtml += `<img src="${c.img || 'https://placehold.co/20'}" title="${c.name}" class="color-preview" style="width:25px; height:25px; border:1px solid #ccc; display:inline-block; margin-left:2px;">`;
+                });
+            } else {
+                colorsHtml = "<span style='font-size:12px; color:#999'>-</span>";
+            }
+
+            // Render Sizes with Quantities
+            let sizesHtml = "";
+            if(p.sizes && p.sizes.length) {
+                sizesHtml = p.sizes.map(s => `<span style="background:#f1f5f9; padding:2px 6px; border-radius:4px; font-size:12px; margin-left:2px; border:1px solid #ddd;">${s.name}: <strong>${s.qty}</strong></span>`).join('');
+            } else {
+                sizesHtml = "<span style='font-size:12px; color:#999'>-</span>";
+            }
+
+            tbody.innerHTML += `<tr>
+                <td><img src="${p.img || 'https://placehold.co/80x80?text=No+Image'}" class="product-thumb" alt="${p.name}" onerror="this.src='https://placehold.co/80x80?text=No+Image'"></td>
+                <td>${p.name}</td>
+                <td>${colorsHtml}</td>
+                <td>${sizesHtml}</td>
+                <td>${p.category}</td>
+                <td>${priceDisplay}</td>
+                <td>
+                    <button onclick="window.funcs.delProd('${p.id}')" style="color:red;border:none;background:none;cursor:pointer; font-size:16px;">🗑️</button>
+                </td>
+            </tr>`; 
+        });
+        updateSubCatsDropdown();
+    }
+
+    async function delProd(id) {
+        if(confirm("هل أنت متأكد من حذف المنتج؟")) {
+            await deleteDoc(doc(db, "products", id));
+            showToast("تم حذف المنتج", "error");
+        }
+    }
+
+    function renderOrders() {
+    const list = document.getElementById('ordersList');
+    list.innerHTML = allOrders.length ? "" : "<p style='text-align:center;color:#999'>لا توجد طلبات نشطة</p>";
+    
+    allOrders.sort((a,b)=>b.timestamp - a.timestamp).forEach(o => {
+        let items = o.items ? o.items.map(i => {
+            let det = (i.selectedColor || i.selectedSize) ? `(${i.selectedColor || ''} ${i.selectedSize || ''})` : '';
+            return `${i.name} ${det}`;
+        }).join(' + ') : (o.productName || "منتج غير معروف");
+        
+        let statusButtons = '';
+        if(o.status === 'pending' || o.status === 'cancel_requested') {
+            statusButtons = `
+                <button class="action-btn-custom btn-ship" onclick="window.funcs.updateOrderStatus('${o.id}', 'shipped')">
+                    شحن 🚚
+                </button>
+                <button class="action-btn-custom btn-cancel" onclick="window.funcs.updateOrderStatus('${o.id}', 'cancelled')">
+                    إلغاء ✕
+                </button>
+            `;
+        } else if (o.status === 'shipped') {
+            statusButtons = `
+                <button class="action-btn-custom btn-ship" style="background:#10b981 !important" onclick="window.funcs.updateOrderStatus('${o.id}', 'completed')">
+                    تم التسليم ✓
+                </button>
+            `;
+        }
+
+        list.innerHTML += `
+            <div class="order-card">
+                <!-- جهة السعر (يسار) -->
+                <div class="order-price-left">
+                    ${o.total} <small>ج.م</small>
+                </div>
+
+                <!-- جهة البيانات والأزرار (يمين) -->
+                <div class="order-info-right">
+                    <strong>${o.user?.name || 'عميل'}</strong>
+                    <small>${items}</small>
+                    
+                    <div class="order-actions">
+                        ${statusButtons}
+                        <button class="action-btn-custom btn-details" onclick="window.funcs.openOrderDetailModal('${o.id}', 'active')">
+                            تفاصيل
+                        </button>
+                    </div>
+                </div>
+            </div>`;
+    });
+}
+
+    async function updateOrderStatus(id, status) {
+        let note = "";
+        if(status === 'cancelled' || status === 'returned') {
+            note = prompt("سبب الإلغاء/الارتجاع:");
+            if(note === null) return;
+        }
+
+        const order = allOrders.find(o => o.id == id);
+        if(!order) return;
+
+        if(status === 'completed' || status === 'cancelled' || status === 'returned') {
+            const archiveData = {
+                ...order,
+                status: status,
+                archiveNote: note,
+                archivedDate: new Date().toLocaleString(),
+                processedBy: currentUser.name,
+                timestamp: Date.now()
+            };
+            await addDoc(collection(db, "archive"), archiveData);
+            await deleteDoc(doc(db, "orders", id));
+            
+            if(status === 'completed' && order.items) {
+                order.items.forEach(item => {
+                    const p = allProducts.find(x => x.id == item.id);
+                    if(p) updateDoc(doc(db, "products", p.id), { sold: (p.sold||0) + 1 });
+                });
+            }
+            showToast(`تم تغيير حالة الطلب إلى: ${status}`);
+
+        } else {
+            await updateDoc(doc(db, "orders", id), { status: status });
+            showToast("تم تحديث حالة الطلب");
+        }
+    }
+
+    function renderArchive() {
+        const tbody = document.getElementById('archiveTableBody');
+        tbody.innerHTML = "";
+        const emp = document.getElementById('archiveFilterEmp').value;
+        // Date filtering logic implementation would go here similarly
+        let filtered = allArchive.filter(o => {
+            if(emp && o.processedBy !== emp) return false;
+            return true; 
+        });
+
+        filtered.forEach(o => {
+            tbody.innerHTML += `<tr class="clickable-row" onclick="window.funcs.openOrderDetailModal('${o.id}', 'archive')">
+                <td>#${o.id.substring(0,6)}</td><td>${o.user?.name}</td><td style="color:var(--green)">${o.total}</td>
+                <td><span class="badge" style="background:${o.status==='completed'?'var(--green)':(o.status==='cancelled'?'var(--danger)':'var(--warning)')}">${o.status}</span></td>
+                <td>${o.processedBy}</td><td>${o.archivedDate}</td>
+            </tr>`;
+        });
+    }
+
+    function renderReports() {
+        const tbody = document.getElementById('reportsTableBody');
+        tbody.innerHTML = "";
+        let data = {};
+        allArchive.forEach(o => {
+            if(o.status === 'completed') {
+                let u = o.processedBy || 'Unknown';
+                if(!data[u]) data[u] = {count:0, total:0};
+                data[u].count++;
+                data[u].total += parseFloat(o.total || 0);
+            }
+        });
+        Object.keys(data).forEach(k => {
+            tbody.innerHTML += `<tr><td>${k}</td><td>${data[k].count}</td><td>${data[k].total.toFixed(2)} ج.م</td></tr>`;
+        });
+    }
+
+    function renderCategoryUI() {
+        const cats = categoriesData || {};
+        const pCat = document.getElementById('pCategory');
+        pCat.innerHTML = Object.keys(cats).map(c => `<option value="${c}">${c}</option>`).join('');
+        updateSubCatsDropdown();
+        
+        const mainList = document.getElementById('mainCatList');
+        const targetList = document.getElementById('targetMainCat');
+        const subList = document.getElementById('subCatList');
+        mainList.innerHTML = ""; targetList.innerHTML = ""; subList.innerHTML = "";
+        
+        Object.keys(cats).forEach(key => {
+            mainList.innerHTML += `<div class="cat-item"><strong>${key}</strong><button class="delete-btn" onclick="window.funcs.delMainCat('${key}')">حذف</button></div>`;
+            targetList.innerHTML += `<option value="${key}">${key}</option>`;
+            if(cats[key].length > 0) {
+                cats[key].forEach(sub => {
+                    subList.innerHTML += `<div class="cat-item"><span>${key} > <strong>${sub}</strong></span><button class="delete-btn" onclick="window.funcs.delSubCat('${key}','${sub}')">حذف</button></div>`;
+                });
+            }
+        });
+    }
+
+    function updateSubCatsDropdown() {
+        const main = document.getElementById('pCategory').value;
+        const sub = document.getElementById('pSubCategory');
+        sub.innerHTML = (categoriesData[main] || []).map(s => `<option value="${s}">${s}</option>`).join('');
+    }
+
+    async function saveCats() { await setDoc(doc(db, "settings", "categories"), categoriesData); }
+    async function addMainCat() { let v = document.getElementById('newMainCat').value; if(v){ categoriesData[v]=[]; await saveCats(); renderCategoryUI(); } }
+    async function delMainCat(k) { if(confirm("حذف القسم؟")) { delete categoriesData[k]; await saveCats(); renderCategoryUI(); } }
+    async function addSubCat() { let m=document.getElementById('targetMainCat').value, s=document.getElementById('newSubCat').value; if(s){ categoriesData[m].push(s); await saveCats(); renderCategoryUI(); } }
+    async function delSubCat(m,s) { if(confirm("حذف الفرع؟")) { categoriesData[m] = categoriesData[m].filter(x=>x!==s); await saveCats(); renderCategoryUI(); } }
+
+    async function addUser() {
+        const uName = document.getElementById('uName').value;
+        const uUser = document.getElementById('uUser').value;
+        const uPass = document.getElementById('uPass').value;
+        const uRole = document.getElementById('uRole').value;
+        if(uUser && uPass) {
+            await addDoc(collection(db, "system_users"), { name: uName, user: uUser, pass: uPass, role: uRole });
+            document.getElementById('uUser').value = "";
+            document.getElementById('uPass').value = "";
+            showToast("تم إضافة الموظف");
+        } else {
+            showToast("أكمل البيانات المطلوبة", "error");
+        }
+    }
+    function renderUsers() {
+        const t = document.getElementById('usersTableBody'); t.innerHTML = "";
+        allUsers.forEach(u => {
+            t.innerHTML += `<tr><td>${u.name}</td><td>${u.user}</td><td><span class="badge" style="background:${u.role==='admin'?'var(--purple)':(u.role==='manager'?'var(--warning)':'var(--main)')}">${u.role}</span></td><td><button onclick="window.funcs.delUser('${u.id}')" style="color:red;border:none;background:none;cursor:pointer">❌</button></td></tr>`;
+        });
+    }
+    async function delUser(id) { if(confirm("حذف الموظف؟")) await deleteDoc(doc(db, "system_users", id)); }
+
+    function renderChatList() {
+        const sidebar = document.getElementById('chatSidebar');
+        sidebar.innerHTML = "";
+        allChats.forEach(c => {
+            let last = c.messages ? c.messages[c.messages.length-1].text : '';
+            sidebar.innerHTML += `
+                <div class="chat-user-item ${selectedChatUser===c.id?'active':''}" onclick="window.funcs.openChat('${c.id}')">
+                    <strong>${c.id}</strong><br><small style="color:#666">${last.substring(0, 25)}...</small>
+                </div>`;
+        });
+    }
+
+    function openChat(phone) {
+        selectedChatUser = phone;
+        document.getElementById('chatHeaderName').innerText = phone;
+        document.getElementById('adminChatInput').disabled = false;
+        document.getElementById('adminChatBtn').disabled = false;
+        
+        const chat = allChats.find(c => c.id === phone);
+        renderChatBox(chat ? chat.messages : []);
+    }
+
+    function renderChatBox(msgs) {
+        const box = document.getElementById('adminChatBox');
+        box.innerHTML = "";
+        msgs.forEach(m => {
+            box.innerHTML += `<div class="msg ${m.sender}">${m.text}</div>`;
+        });
+        box.scrollTop = box.scrollHeight;
+    }
+
+    async function sendAdminReply() {
+        const txt = document.getElementById('adminChatInput').value;
+        if(!txt || !selectedChatUser) return;
+        
+        const chatRef = doc(db, "chats", selectedChatUser);
+        const chat = allChats.find(c => c.id === selectedChatUser);
+        let msgs = chat ? [...chat.messages] : [];
+        msgs.push({ sender: 'admin', text: txt, time: Date.now() });
+
+        await setDoc(chatRef, { messages: msgs }, { merge: true });
+        document.getElementById('adminChatInput').value = "";
+    }
+
+    function openOrderDetailModal(id, src) {
+        let order = (src==='active') ? allOrders.find(o=>o.id==id) : allArchive.find(o=>o.id==id);
+        if(!order) return;
+        let content = document.getElementById('orderDetailContent');
+        let itemsHtml = (order.items || []).map(i => {
+            let detail = (i.selectedColor || i.selectedSize) ? `<br><small style="color:#666">(${i.selectedColor || '-'} | ${i.selectedSize || '-'})</small>` : '';
+            return `<li style="border-bottom:1px solid #eee; padding:5px 0;">${i.name} ${detail} <span style="float:left; font-weight:bold;">${i.price} ج.م</span></li>`;
+        }).join('');
+        
+        content.innerHTML = `
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-bottom:15px;">
+                <div><strong>👤 العميل:</strong><br>${order.user?.name}</div>
+                <div><strong>📞 الهاتف:</strong><br>${order.user?.phone}</div>
+                <div style="grid-column: span 2"><strong>📍 العنوان:</strong><br>${order.address}</div>
+            </div>
+            <hr>
+            <ul style="padding-right:20px;">${itemsHtml}</ul>
+            <div style="margin-top:15px; text-align:left; font-size:18px; font-weight:bold; color:var(--main);">
+                الإجمالي: ${order.total} ج.م
+            </div>
+        `;
+        document.getElementById('orderDetailModal').style.display = 'flex';
+    }
+
+    function renderStats() {
+        document.getElementById('statOrders').innerText = allOrders.length;
+        document.getElementById('statArchived').innerText = allArchive.length;
+        document.getElementById('statUsers').innerText = allUsers.length;
+        let rev = 0; allArchive.forEach(a=>{if(a.status==='completed') rev += parseFloat(a.total||0)});
+        document.getElementById('statRevenue').innerText = rev + " ج.م";
+
+        let counts = {};
+        allProducts.forEach(p => counts[p.name] = (p.sold||0));
+        const list = document.getElementById('topSellersList'); list.innerHTML = "";
+        Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,5).forEach(([n,c], i) => {
+            list.innerHTML += `<div style="padding:8px; border-bottom:1px solid #f1f5f9; display:flex; justify-content:space-between;">
+                <span>${i+1}. ${n}</span> <strong style="color:var(--main)">${c}</strong>
+            </div>`;
+        });
+    }
+    
+    function showSection(id, btn) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        document.querySelectorAll('.menu-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        if(id === 'users' && currentUser.role==='admin') renderUsers();
+        if(id === 'archive') renderArchive();
+        if(id === 'reports') renderReports();
+    }
+    function populateEmpFilter() {
+        const sel = document.getElementById('archiveFilterEmp');
+        sel.innerHTML = '<option value="">-- الكل --</option>';
+        allUsers.forEach(u => sel.innerHTML += `<option value="${u.name}">${u.name}</option>`);
+        document.getElementById('reportFilterEmp').innerHTML = sel.innerHTML;
+    }
+    function resetArchiveFilters() { document.getElementById('archiveFilterEmp').value=""; document.getElementById('archiveFilterFrom').value=""; document.getElementById('archiveFilterTo').value=""; renderArchive(); }
+    function resetReportFilters() { document.getElementById('reportFilterEmp').value=""; document.getElementById('reportFilterFrom').value=""; document.getElementById('reportFilterTo').value=""; renderReports(); }
+
+</script>
+</body>
+</html>
