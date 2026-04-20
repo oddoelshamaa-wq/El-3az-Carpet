@@ -1,0 +1,868 @@
+    <!DOCTYPE html>
+    <html lang="ar" dir="rtl">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>El 3az Carpet | سجاد فاخر</title>
+        <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+        <style>
+            :root { --primary: #00a884; --primary-dark: #007a5e; --accent: #25d366; --dark: #0f172a; --gray: #64748b; --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); --danger: #ef4444; --warning: #f59e0b; }
+            body { font-family: 'Cairo', sans-serif; background: var(--bg-gradient); margin: 0; padding-bottom: 90px; color: var(--dark); min-height: 100vh; -webkit-tap-highlight-color: transparent; overflow-x: hidden; }
+            * { box-sizing: border-box; outline: none; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
+            a { text-decoration: none; color: inherit; }
+            
+            /* --- Preloader Style --- */
+            #preloader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--dark); z-index: 99999; display: flex; justify-content: center; align-items: center; flex-direction: column; transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1); }
+            #preloader.loaded { transform: translateY(-100%); }
+            .loader-logo { font-size: 40px; font-weight: 900; color: white; margin-bottom: 20px; letter-spacing: 2px; text-transform: uppercase; animation: fadeIn 1s ease-in; }
+            .loader-logo span { color: var(--primary); }
+            .spinner { width: 50px; height: 50px; border: 5px solid rgba(255, 255, 255, 0.1); border-top: 5px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; }
+            @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+            @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+            /* Navbar */
+            nav { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 20px rgba(0,0,0,0.03); position: sticky; top: 0; z-index: 1000; }
+            .logo { font-size: 24px; font-weight: 900; color: var(--primary); text-transform: uppercase; letter-spacing: 1px; }
+            .nav-icons { display: flex; gap: 10px; }
+            .icon-btn { position: relative; cursor: pointer; font-size: 20px; background: #f1f5f9; width: 42px; height: 42px; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: var(--dark); border: none; }
+            .icon-btn:hover { background: #e2e8f0; color: var(--primary); }
+            .badge { position: absolute; top: -2px; right: -2px; background: var(--danger); color: white; font-size: 10px; min-width: 18px; height: 18px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 2px solid white; padding: 0 4px; }
+
+            /* Search Bar */
+            .search-container { padding: 0 5%; margin-top: -25px; position: relative; z-index: 2; margin-bottom: 20px; }
+            .search-box { background: white; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); padding: 5px 15px; display: flex; align-items: center; border: 1px solid #e2e8f0; }
+            .search-box input { width: 100%; border: none; padding: 12px; font-size: 16px; font-family: 'Cairo'; }
+            .search-box span { font-size: 20px; color: #94a3b8; }
+
+            /* Hero Banner */
+            .hero-banner { padding: 40px 5% 60px; text-align: center; background: linear-gradient(135deg, #00a884, #00d2a6); color: white; border-radius: 0 0 40px 40px; box-shadow: 0 10px 30px rgba(0, 168, 132, 0.25); position: relative; z-index: 1; }
+            .hero-banner h1 { margin: 0; font-size: 26px; font-weight: 800; text-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+            .hero-banner p { margin: 8px 0 0; opacity: 0.95; font-size: 14px; }
+
+            /* Categories */
+            .categories-container { padding: 0 5%; margin-bottom: 20px; }
+            .cat-strip { display: flex; gap: 10px; overflow-x: auto; padding: 10px 0; scrollbar-width: none; }
+            .cat-strip::-webkit-scrollbar { display: none; }
+            .cat-btn { border: none; background: white; padding: 10px 20px; border-radius: 30px; cursor: pointer; color: var(--gray); font-weight: 700; font-size: 13px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); border: 1px solid #f1f5f9; white-space: nowrap; }
+            .cat-btn:hover, .cat-btn.active { background: var(--dark); color: white; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(15, 23, 42, 0.2); }
+            .sub-cat-strip { display: none; gap: 8px; overflow-x: auto; padding: 5px 0; margin-top: 5px; }
+            .sub-cat-strip.show { display: flex; }
+            .sub-btn { font-size: 12px; padding: 6px 14px; border-radius: 20px; border: 1px solid #e2e8f0; background: rgba(255,255,255,0.7); cursor: pointer; color: var(--gray); white-space: nowrap; }
+            .sub-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+            /* Products Grid */
+            .container { padding: 10px 5%; max-width: 1200px; margin: 0 auto; }
+            .section-title { font-size: 20px; font-weight: 800; color: var(--dark); margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between; }
+            .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; }
+            
+            /* Product Card */
+            .card { background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.03); position: relative; display: flex; flex-direction: column; cursor: pointer; border: 1px solid #f1f5f9; }
+            .card:active { transform: scale(0.98); }
+            .card-img-wrapper { width: 100%; height: 180px; background: #f8fafc; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
+            .card img { width: 100%; height: 100%; object-fit: cover; }
+            .wishlist-btn { position: absolute; top: 10px; right: 10px; width: 32px; height: 32px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); z-index: 2; border: none; cursor: pointer; font-size: 16px; color: #cbd5e1; transition: 0.3s; }
+            .wishlist-btn.active { color: #ef4444; animation: heartBeat 0.3s; }
+            @keyframes heartBeat { 0%{transform:scale(1);} 50%{transform:scale(1.2);} 100%{transform:scale(1);} }
+            
+            .card-body { padding: 12px; flex: 1; display: flex; flex-direction: column; }
+            .cat-label { font-size: 9px; color: var(--primary); font-weight: bold; background: rgba(0, 168, 132, 0.08); padding: 3px 8px; border-radius: 4px; width: fit-content; margin-bottom: 5px; }
+            .card h3 { margin: 4px 0; font-size: 14px; color: var(--dark); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+            .price-box { margin-top: auto; display: flex; align-items: center; gap: 5px; margin-bottom: 8px; }
+            .price { color: var(--dark); font-size: 16px; font-weight: 800; }
+            .old-price { text-decoration: line-through; color: #94a3b8; font-size: 11px; }
+            .discount-badge { position: absolute; top: 10px; left: 10px; background: var(--danger); color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; z-index: 2; }
+            .stock-badge { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.9); padding: 4px; text-align: center; font-size: 10px; font-weight: bold; color: var(--danger); }
+            .btn-add { width: 100%; background: var(--dark); color: white; border: none; padding: 8px; border-radius: 8px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; font-size: 13px; }
+            .btn-add:hover { background: var(--primary); }
+
+            /* Bottom Nav */
+            .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: white; padding: 10px 20px; display: flex; justify-content: space-around; align-items: center; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); z-index: 2000; border-radius: 20px 20px 0 0; }
+            .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #94a3b8; font-size: 10px; font-weight: bold; cursor: pointer; }
+            .nav-item span { font-size: 22px; margin-bottom: -2px; }
+            .nav-item.active { color: var(--primary); }
+            .nav-item.cart-nav { position: relative; }
+
+            /* Modals & Others */
+            .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9999; display: none; justify-content: center; align-items: flex-end; backdrop-filter: blur(5px); }
+            .modal-card { background: white; width: 100%; max-width: 500px; padding: 25px; border-radius: 25px 25px 0 0; box-shadow: 0 -10px 40px rgba(0,0,0,0.1); position: relative; max-height: 85vh; overflow-y: auto; animation: slideUp 0.3s ease; margin: 0 auto; }
+            @media (min-width: 500px) { .modal-overlay { align-items: center; } .modal-card { border-radius: 20px; width: 90%; } }
+            @keyframes slideUp { from{transform:translateY(100%);} to{transform:translateY(0);} }
+            .close-btn { position: absolute; top: 15px; left: 20px; background: #f1f5f9; width: 30px; height: 30px; border-radius: 50%; border: none; font-size: 18px; cursor: pointer; color: #64748b; display: flex; align-items: center; justify-content: center; }
+            .field { width: 100%; padding: 14px; border: 2px solid #f1f5f9; border-radius: 12px; margin-bottom: 10px; background: #f8fafc; font-family: 'Cairo'; }
+            .field:focus { border-color: var(--primary); background: white; }
+            .btn-main { width: 100%; padding: 14px; background: var(--dark); color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; margin-top: 10px; font-size: 16px; box-shadow: 0 4px 15px rgba(15, 23, 42, 0.2); }
+            .btn-main:active { transform: scale(0.98); }
+            
+            .chat-fab { position: fixed; bottom: 85px; left: 20px; width: 55px; height: 55px; background: #25d366; color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 28px; cursor: pointer; box-shadow: 0 10px 20px rgba(37, 211, 102, 0.3); z-index: 1500; }
+            .chat-window { position: fixed; bottom: 100px; left: 20px; width: 300px; height: 400px; background: white; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.15); z-index: 1499; display: none; flex-direction: column; overflow: hidden; border: 1px solid #f1f5f9; }
+            .chat-header { background: #075e54; color: white; padding: 15px; display: flex; align-items: center; gap: 10px; }
+            .chat-body { flex: 1; padding: 15px; overflow-y: auto; background: #e5ddd5; }
+            .chat-input-area { padding: 10px; background: white; display: flex; gap: 8px; border-top: 1px solid #eee; }
+            
+            .toast { position: fixed; bottom: 90px; right: 50%; transform: translateX(50%); background: rgba(15, 23, 42, 0.9); color: white; padding: 10px 20px; border-radius: 30px; font-size: 13px; opacity: 0; pointer-events: none; z-index: 6000; transition: 0.3s; display: flex; align-items: center; gap: 8px; width: max-content; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+            .toast.show { opacity: 1; bottom: 100px; }
+            
+            .address-card { border: 2px solid #f1f5f9; padding: 15px; border-radius: 12px; margin-bottom: 10px; cursor: pointer; position: relative; transition: 0.3s; }
+            .address-card.selected { border-color: var(--primary); background: #f0fdf4; box-shadow: 0 4px 10px rgba(0, 168, 132, 0.1); }
+            .btn-gps { width: 100%; padding: 12px; background: #e0f2fe; color: #0284c7; border: 1px dashed #0284c7; border-radius: 10px; cursor: pointer; margin-bottom: 10px; font-weight: bold; }
+            .detail-img { width: 100%; height: 250px; object-fit: cover; border-radius: 15px; margin-bottom: 15px; }
+            
+            .option-group { margin: 15px 0; }
+            .option-title { font-weight: bold; display: block; margin-bottom: 8px; font-size: 14px; color: #334155; }
+            .option-btn { border: 1px solid #cbd5e1; background: white; padding: 6px 14px; border-radius: 8px; cursor: pointer; margin-left: 5px; font-size: 13px; min-width: 40px; }
+            .option-btn.selected { background: var(--dark); color: white; border-color: var(--dark); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+            
+            /* Quantity Counter */
+            .qty-container { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 15px 0; }
+            .qty-btn { background: #f1f5f9; border: 1px solid #cbd5e1; width: 36px; height: 36px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; color: var(--dark); transition: 0.2s; }
+            .qty-btn:hover { background: var(--dark); color: white; border-color: var(--dark); }
+            .qty-input { background: white; border: 2px solid #f1f5f9; padding: 8px 15px; border-radius: 8px; font-weight: bold; min-width: 50px; text-align: center; font-size: 16px; }
+            
+            /* Empty State */
+            .empty-state { text-align: center; padding: 40px 20px; color: #94a3b8; }
+            .empty-state span { font-size: 40px; display: block; margin-bottom: 10px; opacity: 0.5; }
+
+            .site-footer { background: var(--dark); color: white; padding: 30px 5% 50px; margin-top: 50px; border-radius: 30px 30px 0 0; }
+            .footer-logo { text-align:center; margin-bottom:20px; }
+            .contact-link { display: flex; align-items: center; gap: 10px; color: white; text-decoration: none; margin-bottom: 10px; transition: 0.3s; padding: 12px 15px; background: rgba(255,255,255,0.08); border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); }
+            .contact-link:hover { background: rgba(255,255,255,0.15); border-color: var(--primary); transform: translateY(-3px); }
+            .contact-icon { font-size: 22px; width: 30px; text-align: center; }
+        </style>
+    </head>
+    <body>
+
+        <!-- Preloader -->
+        <div id="preloader">
+            <div class="loader-logo">EL 3AZ <span>CARPET</span></div>
+            <div class="spinner"></div>
+        </div>
+
+        <nav>
+            <a href="#" class="logo">EL 3AZ CARPET</a>
+            <div class="nav-icons">
+                <div class="icon-btn" onclick="window.funcs.openHistory()" title="طلباتي">📦</div>
+                <div id="authBtnArea"></div>
+            </div>
+        </nav>
+
+        <header class="hero-banner">
+            <h1>عز السجاد</h1>
+            <p>سجاد فاخر بجودة عالمية</p>
+        </header>
+
+        <div class="search-container">
+            <div class="search-box">
+                <span style="margin-left:10px;">🔍</span>
+                <input type="text" id="searchInput" placeholder="ابحث عن منتج..." onkeyup="window.funcs.searchProducts(this.value)">
+            </div>
+        </div>
+
+        <div class="categories-container">
+            <div class="cat-strip" id="catStrip"></div>
+            <div class="sub-cat-strip" id="subCatStrip"></div>
+        </div>
+
+        <div class="container">
+            <h2 class="section-title">
+                <span>أحدث المنتجات 🔥</span>
+            </h2>
+            <div class="grid" id="productsGrid">
+                <div class="empty-state"><span>⏳</span>جاري التحميل...</div>
+            </div>
+        </div>
+
+        <footer class="site-footer">
+            <div class="footer-logo">
+                <h2 class="logo" style="margin:0 0 10px 0;">EL 3AZ CARPET</h2>
+                <p style="color:#94a3b8; font-size:13px;">نسعد بخدمتكم دائماً.</p>
+            </div>
+            
+            <div style="display:flex; flex-direction:column; gap:5px;">
+                <a href="tel:01122884885" class="contact-link">
+                    <span class="contact-icon">📞</span>
+                    <div><div style="font-size:12px; opacity:0.7;">اتصل بنا</div><div style="font-weight:bold; font-size:16px; direction:ltr;">01122884885</div></div>
+                </a>
+                
+                <a href="https://wa.me/201122884885" target="_blank" class="contact-link">
+                    <span class="contact-icon">💬</span>
+                    <div><div style="font-size:12px; opacity:0.7;">واتساب</div><div style="font-weight:bold; font-size:16px;">WhatsApp</div></div>
+                </a>
+                
+                <a href="https://www.facebook.com" target="_blank" class="contact-link">
+                    <span class="contact-icon">📘</span>
+                    <div><div style="font-size:12px; opacity:0.7;">تابعنا على</div><div style="font-weight:bold; font-size:16px;">Facebook Page</div></div>
+                </a>
+            </div>
+
+            <div style="text-align: center; border-top: 1px solid rgba(255,255,255,0.1); margin-top: 30px; padding-top: 20px; font-size: 12px; color: #64748b;">
+                &copy; 2024 جميع الحقوق محفوظة لعز السجاد.
+            </div>
+        </footer>
+
+        <div class="bottom-nav">
+            <div class="nav-item active" onclick="window.scrollTo(0,0)"><span>🏠</span>الرئيسية</div>
+            <div class="nav-item" onclick="window.funcs.openWishlist()"><span>❤️</span>المفضلة</div>
+            <div class="nav-item cart-nav" onclick="window.funcs.openCart()">
+                <span>🛒</span>السلة
+                <div class="badge" id="cartBadge" style="top:-5px; right:10px;">0</div>
+            </div>
+            <div class="nav-item" onclick="window.funcs.openProfile()"><span>👤</span>حسابي</div>
+        </div>
+
+        <div class="chat-fab" onclick="window.funcs.toggleChat()">💬</div>
+        <div class="chat-window" id="chatWindow">
+            <div class="chat-header">
+                <div><div style="font-weight:bold;">خدمة العملاء</div><small>متصل الآن</small></div>
+                <span onclick="window.funcs.toggleChat()" style="margin-right:auto; cursor:pointer; font-size:20px;">&times;</span>
+            </div>
+            <div class="chat-body" id="chatBody"></div>
+            <div class="chat-input-area">
+                <input type="text" id="chatInput" placeholder="اكتب رسالة..." style="flex:1; padding:8px; border-radius:20px; border:1px solid #ddd;">
+                <button onclick="window.funcs.sendChatMsg()" style="background:var(--primary); color:white; border:none; width:35px; height:35px; border-radius:50%; cursor:pointer;">➤</button>
+            </div>
+        </div>
+
+        <div id="toast" class="toast">✅ تمت الإضافة بنجاح</div>
+
+        <!-- Product Modal -->
+        <div class="modal-overlay" id="productModal">
+            <div class="modal-card">
+                <button class="close-btn" onclick="window.funcs.closeModal('productModal')">&times;</button>
+                <div id="productModalContent"></div>
+            </div>
+        </div>
+
+        <!-- Login Modal -->
+        <div class="modal-overlay" id="loginModal">
+            <div class="modal-card" style="text-align:center;">
+                <button class="close-btn" onclick="window.funcs.closeModal('loginModal')">&times;</button>
+                <span style="font-size:40px; display:block; margin-bottom:10px;">👋</span>
+                <h2 style="margin-bottom:5px;">تسجيل الدخول</h2>
+                <p style="color:#666; margin-bottom:20px; font-size:13px;">أدخل بياناتك لمتابعة الطلبات</p>
+                <input id="loginName" class="field" placeholder="الاسم ثلاثي">
+                <input id="loginPhone" class="field" placeholder="رقم الموبايل">
+                <button class="btn-main" onclick="window.funcs.login()">دخول ومتابعة</button>
+            </div>
+        </div>
+
+        <!-- Wishlist Modal -->
+        <div class="modal-overlay" id="wishlistModal">
+            <div class="modal-card">
+                <button class="close-btn" onclick="window.funcs.closeModal('wishlistModal')">&times;</button>
+                <h2 style="text-align:center; margin-bottom:20px;">المفضلة ❤️</h2>
+                <div id="wishlistItems" style="max-height:60vh; overflow-y:auto;"></div>
+            </div>
+        </div>
+
+        <!-- Profile Modal -->
+        <div class="modal-overlay" id="profileModal">
+            <div class="modal-card">
+                <button class="close-btn" onclick="window.funcs.closeModal('profileModal')">&times;</button>
+                <div id="profileContent"></div>
+            </div>
+        </div>
+
+        <!-- Cart Modal -->
+        <div class="modal-overlay" id="cartModal">
+            <div class="modal-card">
+                <button class="close-btn" onclick="window.funcs.closeModal('cartModal')">&times;</button>
+                <h2 style="text-align:center; margin-bottom:15px;">سلة المشتريات 🛒</h2>
+                <div id="cartItems" style="max-height: 200px; overflow-y: auto; margin-bottom:15px;"></div>
+                <div style="display:flex; justify-content:space-between; font-weight:bold; font-size:16px; border-top:1px solid #f1f5f9; padding-top:10px; margin-bottom:10px;">
+                    <span>الإجمالي:</span> <span id="cartTotal" style="color:var(--primary);">0</span>
+                </div>
+                <div style="background:#f8fafc; padding:15px; border-radius:12px; margin-bottom:15px; border:1px solid #f1f5f9;">
+                    <h4 style="margin:0 0 10px 0; font-size:13px; color:#64748b;">عنوان التوصيل 📍</h4>
+                    <div id="checkoutAddresses" style="max-height: 120px; overflow-y: auto;"></div>
+                    <button onclick="window.funcs.openProfile()" style="font-size:12px; background:none; border:none; color:var(--primary); cursor:pointer; text-decoration:underline; margin-top:5px;">+ إدارة العناوين</button>
+                </div>
+                <button class="btn-main" onclick="window.funcs.placeOrder()">تأكيد الطلب ✅</button>
+            </div>
+        </div>
+
+        <!-- History Modal -->
+        <div class="modal-overlay" id="historyModal">
+            <div class="modal-card">
+                <button class="close-btn" onclick="window.funcs.closeModal('historyModal')">&times;</button>
+                <h2 style="text-align:center; margin-bottom:20px;">طلباتي السابقة 🧾</h2>
+                <div id="historyList" style="max-height:400px; overflow-y:auto;"></div>
+            </div>
+        </div>
+
+        <script type="module">
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+            import { getFirestore, collection, getDocs, addDoc, doc, setDoc, getDoc, updateDoc, onSnapshot, query, where, orderBy, writeBatch, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+            const firebaseConfig = {
+                apiKey: "AIzaSyC-WunzZkXYOeXNAKtFgnti0suXbvU74FY",
+                authDomain: "stoer-elshamaa.firebaseapp.com",
+                projectId: "stoer-elshamaa",
+                storageBucket: "stoer-elshamaa.firebasestorage.app",
+                messagingSenderId: "566386579692",
+                appId: "1:566386579692:web:c8b293e634b5cb62c5adc9",
+                measurementId: "G-P2JFPZ7LTL"
+            };
+
+            const app = initializeApp(firebaseConfig);
+            const db = getFirestore(app);
+
+            let currentUser = JSON.parse(localStorage.getItem('elshamaaUser')); 
+            let cart = JSON.parse(localStorage.getItem('elshamaaCart')) || [];
+            let wishlist = JSON.parse(localStorage.getItem('elshamaaWishlist')) || [];
+            let categoriesData = { "عام": [] };
+            let allProducts = [];
+            let currentCat = 'all';
+            let currentSub = 'all';
+            let searchQuery = "";
+            let selectedAddressId = null;
+            let tempMapLink = "";
+            let currentProductInModal = null;
+            let selectedColor = null;
+            let selectedSize = null;
+            let modalQty = 1; // تعريف كمية المنتج الحالية في النافذة
+            let chatUnsubscribe = null;
+
+            // Logic to hide preloader after page load
+            window.addEventListener('load', () => {
+                setTimeout(() => {
+                    document.getElementById('preloader').classList.add('loaded');
+                }, 2500);
+            });
+
+            window.funcs = {
+                openProfile: () => openProfile(),
+                openHistory: () => openHistory(),
+                openCart: () => openCart(),
+                openWishlist: () => openWishlist(),
+                toggleWishlist: (id, btn) => toggleWishlist(id, btn),
+                searchProducts: (q) => { searchQuery = q.toLowerCase(); renderProducts(); },
+                toggleChat: () => toggleChat(),
+                sendChatMsg: () => sendChatMsg(),
+                closeModal: (id) => { document.getElementById(id).style.display = 'none'; modalQty = 1; },
+                login: () => login(),
+                placeOrder: () => placeOrder(),
+                openProductDetails: (id) => openProductDetails(id),
+                addToCart: (id) => addToCart(id),
+                addToCartFromModal: () => addToCartFromModal(),
+                changeModalQty: (d) => changeModalQty(d),
+                remCart: (id) => remCart(id),
+                cancelReq: (id) => cancelReq(id),
+                detectLoc: () => detectLoc(),
+                addAddr: () => addAddr(),
+                delAddr: (i) => delAddr(i),
+                setCat: (cat, btn) => setCat(cat, btn),
+                setSub: (sub, btn) => setSub(sub, btn),
+                logout: () => logout(),
+                selectOption: (type, val, btn) => selectOption(type, val, btn)
+            };
+
+            async function init() {
+                await fetchCategories();
+                renderCategories(); 
+                fetchProducts(); 
+                updateUI();
+                if(currentUser) listenToChat();
+            }
+
+            async function fetchCategories() {
+                try {
+                    const docRef = doc(db, "settings", "categories");
+                    const docSnap = await getDoc(docRef);
+                    if (docSnap.exists()) categoriesData = docSnap.data();
+                    else await setDoc(docRef, categoriesData);
+                } catch (e) { console.error("Error fetching cats:", e); }
+            }
+
+            function fetchProducts() {
+                const q = query(collection(db, "products"));
+                onSnapshot(q, (snapshot) => {
+                    allProducts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    renderProducts();
+                });
+            }
+
+            function renderCategories() {
+                const strip = document.getElementById('catStrip');
+                strip.innerHTML = '<button class="cat-btn active" onclick="window.funcs.setCat(\'all\', this)">الكل</button>';
+                Object.keys(categoriesData).forEach(c => strip.innerHTML += `<button class="cat-btn" onclick="window.funcs.setCat('${c}', this)">${c}</button>`);
+            }
+
+            function setCat(cat, btn) {
+                currentCat = cat; currentSub = 'all';
+                document.querySelectorAll('.cat-strip .cat-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active');
+                const subStrip = document.getElementById('subCatStrip');
+                if(cat !== 'all' && categoriesData[cat] && categoriesData[cat].length > 0) {
+                    subStrip.innerHTML = `<button class="sub-btn active" onclick="window.funcs.setSub('all', this)">كل ${cat}</button>`;
+                    categoriesData[cat].forEach(sub => subStrip.innerHTML += `<button class="sub-btn" onclick="window.funcs.setSub('${sub}', this)">${sub}</button>`);
+                    subStrip.classList.add('show');
+                } else { subStrip.classList.remove('show'); subStrip.innerHTML = ''; }
+                renderProducts();
+            }
+
+            function setSub(sub, btn) {
+                currentSub = sub;
+                document.querySelectorAll('.sub-cat-strip .sub-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active');
+                renderProducts();
+            }
+
+            function renderProducts() {
+                const grid = document.getElementById('productsGrid');
+                grid.innerHTML = "";
+                let filtered = allProducts;
+                
+                // Search Filter
+                if(searchQuery) {
+                    filtered = filtered.filter(p => p.name.toLowerCase().includes(searchQuery));
+                } else {
+                    if(currentCat !== 'all') filtered = filtered.filter(p => p.category === currentCat);
+                    if(currentSub !== 'all') filtered = filtered.filter(p => p.subCategory === currentSub);
+                }
+                
+                if(filtered.length === 0) { 
+                    grid.innerHTML = "<div class='empty-state'><span>🔍</span>لا توجد منتجات مطابقة</div>"; 
+                    return; 
+                }
+
+                filtered.forEach(p => {
+                    let badge = p.quantity <= 0 ? '<div class="stock-badge">نفذت الكمية</div>' : (p.quantity < 5 ? '<div class="stock-badge" style="color:#f59e0b">كمية محدودة</div>' : '');
+                    let discountHTML = "";
+                    let priceHTML = `<div class="price-box"><span class="price">${p.price} ج.م</span></div>`;
+                    if(p.discountPrice && p.discountPrice > 0 && parseFloat(p.discountPrice) < parseFloat(p.price)) {
+                        let off = Math.round(((p.price - p.discountPrice) / p.price) * 100);
+                        discountHTML = `<div class="discount-badge">-${off}%</div>`;
+                        priceHTML = `<div class="price-box"><span class="price" style="color:var(--danger)">${p.discountPrice}</span> <span class="old-price">${p.price}</span></div>`;
+                    }
+
+                    let imgUrl = p.image || p.img || `https://via.placeholder.com/300x200?text=${encodeURIComponent(p.name)}`;
+                    let isWish = wishlist.includes(p.id) ? 'active' : '';
+                    let heartContent = isWish ? '❤️' : '🤍';
+
+                    grid.innerHTML += `
+                    <div class="card" onclick="window.funcs.openProductDetails('${p.id}')">
+                        ${badge} ${discountHTML}
+                        <button class="wishlist-btn ${isWish}" onclick="event.stopPropagation(); window.funcs.toggleWishlist('${p.id}', this)">${heartContent}</button>
+                        <div class="card-img-wrapper">
+                            <img src="${imgUrl}" onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
+                        </div>
+                        <div class="card-body">
+                            <span class="cat-label">${p.category}</span>
+                            <h3>${p.name}</h3>
+                            ${priceHTML}
+                            ${p.quantity > 0 ? `<button class="btn-add" onclick="event.stopPropagation(); window.funcs.openProductDetails('${p.id}')">إضافة للسلة 🛒</button>` : `<button class="btn-add" style="background:#cbd5e1; cursor:not-allowed;" disabled>غير متاح</button>`}
+                        </div>
+                    </div>`;
+                });
+            }
+
+            function toggleWishlist(id, btn) {
+                if(wishlist.includes(id)) {
+                    wishlist = wishlist.filter(x => x !== id);
+                    btn.classList.remove('active');
+                    btn.innerHTML = '🤍';
+                    showToast('تم الحذف من المفضلة 💔');
+                } else {
+                    wishlist.push(id);
+                    btn.classList.add('active');
+                    btn.innerHTML = '❤️';
+                    showToast('تمت الإضافة للمفضلة ❤️');
+                }
+                localStorage.setItem('elshamaaWishlist', JSON.stringify(wishlist));
+            }
+
+            function openWishlist() {
+                const list = document.getElementById('wishlistItems'); list.innerHTML = "";
+                const wishes = allProducts.filter(p => wishlist.includes(p.id));
+                
+                if(wishes.length === 0) list.innerHTML = "<div class='empty-state'><span>💔</span>المفضلة فارغة</div>";
+                
+                wishes.forEach(p => {
+                    let imgUrl = p.image || p.img || `https://via.placeholder.com/100`;
+                    let price = p.discountPrice || p.price;
+                    list.innerHTML += `
+                        <div style="display:flex; gap:10px; align-items:center; border-bottom:1px solid #eee; padding:10px 0;">
+                            <img src="${imgUrl}" style="width:60px; height:60px; border-radius:10px; object-fit:cover;">
+                            <div style="flex:1;">
+                                <div style="font-weight:bold; font-size:14px;">${p.name}</div>
+                                <div style="color:var(--primary); font-weight:bold;">${price} ج.م</div>
+                            </div>
+                            <button class="btn-add" style="width:auto; padding:5px 10px;" onclick="window.funcs.openProductDetails('${p.id}')">🛒</button>
+                        </div>`;
+                });
+                document.getElementById('wishlistModal').style.display = 'flex';
+            }
+
+            function openProductDetails(id) {
+                const p = allProducts.find(x => x.id == id);
+                if(!p) return;
+                currentProductInModal = p;
+                selectedColor = null;
+                selectedSize = null;
+                modalQty = 1;
+
+                const content = document.getElementById('productModalContent');
+                let imgUrl = p.image || p.img || "https://via.placeholder.com/300";
+                let desc = p.description || p.desc || "منتج عالي الجودة من EL 3AZ CARPET.";
+                let priceDisplay = `<span class="price" style="font-size:24px;">${p.price} ج.م</span>`;
+                if(p.discountPrice && p.discountPrice > 0 && parseFloat(p.discountPrice) < parseFloat(p.price)) {
+                    priceDisplay = `<span class="price" style="font-size:24px; color:var(--danger);">${p.discountPrice} ج.م</span> <span class="old-price" style="font-size:16px;">${p.price} ج.م</span>`;
+                }
+
+                let colorHtml = '';
+                if(p.colors && p.colors.length > 0) {
+                    colorHtml = `<div class="option-group"><span class="option-title">اختر اللون:</span><div style="display:flex; flex-wrap:wrap; gap:8px;">` +
+                        p.colors.map(c => {
+                            let name = typeof c === 'string' ? c : (c.name || c.label);
+                            let img = typeof c === 'object' ? (c.img || c.image) : null;
+                            return `<button class="option-btn" data-value="${name}" onclick="window.funcs.selectOption('color', this.dataset.value, this)">
+                                ${img ? `<img src="${img}" style="width:20px; height:20px; border-radius:50%; margin-inline-end:5px; vertical-align:middle;">` : ''}
+                                ${name}
+                            </button>`;
+                        }).join('') + `</div></div>`;
+                }
+
+                let sizeHtml = '';
+                if(p.sizes && p.sizes.length > 0) {
+                    sizeHtml = `<div class="option-group"><span class="option-title">اختر المقاس:</span><div style="display:flex; flex-wrap:wrap; gap:8px;">` +
+                        p.sizes.map(s => {
+                            let name = typeof s === 'string' ? s : s.name;
+                            return `<button class="option-btn" data-value="${name}" onclick="window.funcs.selectOption('size', this.dataset.value, this)">${name}</button>`;
+                        }).join('') + `</div></div>`;
+                }
+
+                content.innerHTML = `
+                    <img src="${imgUrl}" class="detail-img">
+                    <h2 style="margin:0 0 5px 0;">${p.name}</h2>
+                    <div style="margin-bottom:10px; font-size:14px; color:#475569;">${desc}</div>
+                    <div style="margin-bottom:15px;">${priceDisplay}</div>
+                    ${colorHtml}
+                    ${sizeHtml}
+                    <div class="qty-container">
+                        <button class="qty-btn" onclick="window.funcs.changeModalQty(-1)">−</button>
+                        <span class="qty-input" id="modalQtyVal">1</span>
+                        <button class="qty-btn" onclick="window.funcs.changeModalQty(1)">+</button>
+                    </div>
+                    ${p.quantity > 0 ? `
+                    <button class="btn-main" onclick="window.funcs.addToCartFromModal()">إضافة للسلة 🛒</button>` 
+                    : `<button class="btn-main" style="background:#e2e8f0; color:#94a3b8; cursor:not-allowed;" disabled>نفذت الكمية ❌</button>`}
+                `;
+                document.getElementById('productModal').style.display = 'flex';
+            }
+
+            function selectOption(type, val, btn) {
+                let parent = btn.parentElement;
+                parent.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                if(type === 'color') selectedColor = val;
+                if(type === 'size') selectedSize = val;
+            }
+
+            function changeModalQty(d) {
+                modalQty = Math.max(1, modalQty + d);
+                const qtyElement = document.getElementById('modalQtyVal');
+                if(qtyElement) qtyElement.innerText = modalQty;
+            }
+
+            function addToCartFromModal() {
+                if(!currentProductInModal) return;
+                if(currentProductInModal.colors && currentProductInModal.colors.length > 0 && !selectedColor) return alert("برجاء اختيار اللون");
+                if(currentProductInModal.sizes && currentProductInModal.sizes.length > 0 && !selectedSize) return alert("برجاء اختيار المقاس");
+
+                let existingIndex = cart.findIndex(i => i.id === currentProductInModal.id && i.selectedColor === selectedColor && i.selectedSize === selectedSize);
+                
+                if(existingIndex > -1) {
+                    cart[existingIndex].quantity += modalQty;
+                } else {
+                    let item = { 
+                        ...currentProductInModal, 
+                        selectedColor: selectedColor, 
+                        selectedSize: selectedSize, 
+                        quantity: modalQty, 
+                        cartId: Date.now() + Math.random() 
+                    };
+                    cart.push(item);
+                }
+                
+                saveCart(); 
+                window.funcs.closeModal('productModal'); 
+                showToast(`✅ تم إضافة (${modalQty}) قطعة للسلة`);
+            }
+
+            function addToCart(id) { window.funcs.openProductDetails(id); }
+
+            function saveCart() { localStorage.setItem('elshamaaCart', JSON.stringify(cart)); updateUI(); }
+
+            function showToast(msg) {
+                const t = document.getElementById('toast');
+                t.innerHTML = msg;
+                t.classList.add('show');
+                setTimeout(() => t.classList.remove('show'), 3000);
+            }
+
+            function openCart() {
+                const list = document.getElementById('cartItems'); list.innerHTML = "";
+                let total = 0;
+                if(cart.length === 0) list.innerHTML = "<div class='empty-state'><span>🛒</span>السلة فارغة</div>";
+                
+                cart.forEach((i, idx) => {
+                    let price = (i.discountPrice && i.discountPrice > 0) ? parseFloat(i.discountPrice) : parseFloat(i.price);
+                    let qty = parseInt(i.quantity || 1);
+                    total += price * qty;
+                    let details = (i.selectedColor || i.selectedSize) ? `<small style="color:#64748b">(${i.selectedColor || ''}${i.selectedColor && i.selectedSize ? ' | ' : ''}${i.selectedSize || ''})</small>` : '';
+
+                    list.innerHTML += `
+                        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #f1f5f9; padding:12px 0; gap:10px;">
+                            <div style="flex:1;">
+                                <div style="font-weight:bold; font-size:14px;">${i.name} ${details}</div>
+                                <div style="font-size:13px; color:#475569;">الكمية: ${qty}</div>
+                            </div>
+                            <div style="text-align:left; min-width:120px;">
+                                <div style="font-weight:bold; color:var(--primary);">${(price * qty).toFixed(2).replace('.00','')}</div>
+                                <small style="color:#ef4444; cursor:pointer; font-size:11px;" onclick="window.funcs.remCart(${idx})">حذف</small>
+                            </div>
+                        </div>`;
+                });
+                document.getElementById('cartTotal').innerText = total + " ج.م";
+                renderCheckoutAddresses();
+                document.getElementById('cartModal').style.display = 'flex';
+            }
+
+            function remCart(idx) { cart.splice(idx, 1); saveCart(); openCart(); }
+
+            async function placeOrder() {
+                if(!currentUser) { document.getElementById('loginModal').style.display = 'flex'; return; }
+                if(cart.length === 0) return alert("السلة فارغة");
+                
+                let addrStr = "";
+                if(selectedAddressId) {
+                    let a = currentUser.addresses.find(x => x.id == selectedAddressId);
+                    if(a) addrStr = `${a.title}: ${a.details} ${a.mapLink || ''}`;
+                }
+                if(!addrStr) return alert("اختر عنواناً");
+
+                let itemCounts = {};
+                cart.forEach(item => { itemCounts[item.id] = (itemCounts[item.id] || 0) + 1; });
+
+                for (let [id, count] of Object.entries(itemCounts)) {
+                    let productInStore = allProducts.find(p => p.id === id);
+                    if (!productInStore) return alert("خطأ: منتج غير موجود");
+                    if (productInStore.quantity < count) return alert(`عذراً، المتاح من ${productInStore.name} هو ${productInStore.quantity} فقط`);
+                }
+
+                const total = document.getElementById('cartTotal').innerText;
+                const orderData = {
+                    user: { name: currentUser.name, phone: currentUser.phone },
+                    items: cart,
+                    total: total,
+                    address: addrStr,
+                    status: 'pending',
+                    date: new Date().toLocaleString(),
+                    timestamp: Date.now()
+                };
+
+                try {
+                    const batch = writeBatch(db);
+                    const newOrderRef = doc(collection(db, "orders"));
+                    batch.set(newOrderRef, orderData);
+                    cart.forEach(item => {
+                        const productRef = doc(db, "products", item.id);
+                        batch.update(productRef, { quantity: increment(-1), sold: increment(1) });
+                    });
+                    await batch.commit();
+                    cart = []; saveCart();
+                    window.funcs.closeModal('cartModal'); 
+                    showToast("🎉 تم الطلب بنجاح"); 
+                    window.funcs.openHistory();
+                } catch(e) { console.error(e); alert("حدث خطأ"); }
+            }
+
+            function renderCheckoutAddresses() {
+                const box = document.getElementById('checkoutAddresses'); box.innerHTML = '';
+                if(!currentUser || !currentUser.addresses || currentUser.addresses.length === 0) { 
+                    box.innerHTML = '<p style="color:#94a3b8; font-size:12px; text-align:center;">لا توجد عناوين محفوظة</p>'; 
+                    selectedAddressId = null; return; 
+                }
+                if(!selectedAddressId && currentUser.addresses.length > 0) selectedAddressId = currentUser.addresses[0].id;
+                currentUser.addresses.forEach(addr => {
+                    let isSel = selectedAddressId === addr.id;
+                    const div = document.createElement('div');
+                    div.className = `address-card ${isSel ? 'selected' : ''}`;
+                    div.innerHTML = `<div style="font-weight:bold; font-size:13px;">${addr.title}</div><div style="font-size:11px; color:#64748b;">${addr.details}</div>`;
+                    div.onclick = () => { selectedAddressId = addr.id; renderCheckoutAddresses(); };
+                    box.appendChild(div);
+                });
+            }
+
+            async function login() {
+                let n = document.getElementById('loginName').value;
+                let p = document.getElementById('loginPhone').value;
+                if(n && p) {
+                    const userRef = doc(db, "users", p);
+                    try {
+                        const snap = await getDoc(userRef);
+                        if(snap.exists()) currentUser = snap.data();
+                        else { currentUser = { name: n, phone: p, addresses: [] }; await setDoc(userRef, currentUser); }
+                        localStorage.setItem('elshamaaUser', JSON.stringify(currentUser));
+                        window.funcs.closeModal('loginModal');
+                        updateUI();
+                        listenToChat();
+                        showToast("تم تسجيل الدخول ✅");
+                    } catch(e) { alert("خطأ اتصال"); }
+                } else alert("أكمل البيانات");
+            }
+
+            function logout() { localStorage.removeItem('elshamaaUser'); location.reload(); }
+
+            function updateUI() {
+                document.getElementById('cartBadge').innerText = cart.length;
+                const auth = document.getElementById('authBtnArea');
+                if(currentUser) auth.innerHTML = `<button onclick="window.funcs.openProfile()" style="background:none; border:none; font-size:24px; cursor:pointer;">👤</button>`;
+                else auth.innerHTML = `<button onclick="document.getElementById('loginModal').style.display='flex'" style="background:var(--dark); color:white; border:none; padding:8px 15px; border-radius:20px; cursor:pointer; font-size:13px; font-weight:bold;">دخول</button>`;
+            }
+
+            function openProfile() {
+                if(!currentUser) { document.getElementById('loginModal').style.display = 'flex'; return; }
+                const div = document.getElementById('profileContent');
+                let addrHTML = (currentUser.addresses || []).map((a,i) => `
+                    <div class="address-card">
+                        <span style="position:absolute; top:10px; left:10px; color:#ef4444; font-size:11px; cursor:pointer; padding:5px; background:#fef2f2; border-radius:5px;" onclick="window.funcs.delAddr(${i})">حذف</span>
+                        <div style="font-weight:bold;">${a.title}</div><div style="font-size:12px; color:#64748b; margin-top:5px;">${a.details}</div>
+                    </div>`).join('') || '<div class="empty-state" style="padding:10px;">لا عناوين</div>';
+
+                div.innerHTML = `
+                    <div style="text-align:center; margin-bottom:20px;">
+                        <div style="width:60px; height:60px; background:var(--dark); color:white; border-radius:50%; margin:0 auto 10px; display:flex; justify-content:center; align-items:center; font-size:24px;">${currentUser.name[0]}</div>
+                        <h3 style="margin:0;">${currentUser.name}</h3><small style="color:#64748b;">${currentUser.phone}</small>
+                        <button onclick="window.funcs.logout()" style="display:block; margin:10px auto; background:#fee2e2; color:#b91c1c; border:none; padding:5px 15px; border-radius:20px; cursor:pointer; font-size:12px;">تسجيل خروج</button>
+                    </div>
+                    <h4 style="margin-bottom:10px;">عناويني 📍</h4>
+                    <div style="max-height:150px; overflow-y:auto; margin-bottom:15px;">${addrHTML}</div>
+                    <div style="background:#f8fafc; padding:15px; border-radius:12px; border:1px solid #f1f5f9;">
+                        <button class="btn-gps" onclick="window.funcs.detectLoc()">📍 تحديد موقعي (GPS)</button>
+                        <input id="addrTitle" class="field" placeholder="اسم العنوان (مثال: المنزل)">
+                        <input id="addrDetail" class="field" placeholder="العنوان بالتفصيل">
+                        <button class="btn-main" onclick="window.funcs.addAddr()">حفظ العنوان الجديد</button>
+                    </div>
+                `;
+                document.getElementById('profileModal').style.display = 'flex';
+            }
+
+            async function saveUser() {
+                await setDoc(doc(db, "users", currentUser.phone), currentUser);
+                localStorage.setItem('elshamaaUser', JSON.stringify(currentUser));
+            }
+
+            function addAddr() {
+                let t = document.getElementById('addrTitle').value;
+                let d = document.getElementById('addrDetail').value;
+                if(!t || !d) return alert("أكمل البيانات");
+                if(!currentUser.addresses) currentUser.addresses = [];
+                currentUser.addresses.push({ id: Date.now(), title: t, details: d, mapLink: tempMapLink });
+                tempMapLink = "";
+                saveUser().then(openProfile);
+                showToast("تم حفظ العنوان");
+            }
+
+            function delAddr(i) { if(confirm("حذف العنوان؟")) { currentUser.addresses.splice(i, 1); saveUser().then(openProfile); } }
+
+            function detectLoc() {
+                const btn = document.querySelector('.btn-gps');
+                const detailInput = document.getElementById('addrDetail');
+                if(!navigator.geolocation) return alert("غير مدعوم");
+                btn.innerHTML = "📡 جاري التحديد..."; btn.style.opacity = "0.7";
+                navigator.geolocation.getCurrentPosition(async (pos) => {
+                    const {latitude: lat, longitude: lon} = pos.coords;
+                    tempMapLink = `https://maps.google.com/?q=${lat},${lon}`;
+                    try {
+                        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&accept-language=ar`);
+                        const data = await res.json();
+                        detailInput.value = (data && data.display_name) ? data.display_name : tempMapLink;
+                        btn.innerHTML = "✅ تم تحديد موقعك"; btn.style.background = "#dcfce7"; btn.style.color = "#166534";
+                    } catch (e) { detailInput.value = tempMapLink; btn.innerHTML = "📍 تم (إحداثيات)"; }
+                    btn.style.opacity = "1";
+                }, () => { alert("فشل"); btn.innerHTML = "📍 تحديد موقعي (GPS)"; btn.style.opacity = "1"; }, { enableHighAccuracy: true });
+            }
+
+            async function openHistory() {
+                if(!currentUser) { document.getElementById('loginModal').style.display = 'flex'; return; }
+                const list = document.getElementById('historyList'); list.innerHTML = "<div class='empty-state'>جاري التحميل...</div>";
+                document.getElementById('historyModal').style.display = 'flex';
+                
+                // قاموس تحويل الحالات للعربية
+                const statusMap = {
+                    'pending': 'قيد الانتظار ⏳',
+                    'shipped': 'تم الشحن 🚚',
+                    'completed': 'مكتمل ✅',
+                    'cancelled': 'ملغي ❌',
+                    'returned': 'مرتجع ↩️',
+                    'cancel_requested': 'طلب إلغاء ⚠️'
+                };
+
+                try {
+                    const qOrders = query(collection(db, "orders"), where("user.phone", "==", currentUser.phone));
+                    const snapOrders = await getDocs(qOrders);
+                    let myOrders = snapOrders.docs.map(d => ({id: d.id, ...d.data(), type: 'active'}));
+                    const qArch = query(collection(db, "archive"), where("user.phone", "==", currentUser.phone));
+                    const snapArch = await getDocs(qArch);
+                    let myArch = snapArch.docs.map(d => ({id: d.id, ...d.data(), type: 'archive'}));
+                    const all = [...myOrders, ...myArch].sort((a,b) => b.timestamp - a.timestamp);
+
+                    list.innerHTML = "";
+                    if(all.length === 0) list.innerHTML = "<div class='empty-state'>لا توجد طلبات سابقة</div>";
+                    all.forEach(o => {
+                        let statusText = statusMap[o.status] || o.status;
+                        let color = o.status === 'completed' ? '#dcfce7' : (o.status === 'cancelled' ? '#fee2e2' : '#fff7ed');
+                        list.innerHTML += `<div style="background:${color}; padding:15px; margin-bottom:10px; border-radius:12px; border:1px solid rgba(0,0,0,0.05);">
+                            <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                                <strong>#${o.id.substring(0,6)}</strong> <span style="font-size:12px; font-weight:bold;">${statusText}</span>
+                            </div>
+                            <div style="font-size:12px; color:#64748b;">${o.date}</div>
+                            <div style="margin-top:5px; font-weight:bold;">${o.total}</div>
+                            ${o.status === 'pending' ? `<button onclick="window.funcs.cancelReq('${o.id}')" style="background:white; border:1px solid #ef4444; color:#ef4444; padding:5px 10px; border-radius:5px; font-size:11px; margin-top:5px; cursor:pointer;">إلغاء الطلب</button>` : ''}
+                        </div>`;
+                    });
+                } catch(e) { console.error(e); list.innerHTML = "خطأ"; }
+            }
+
+            async function cancelReq(id) {
+                let r = prompt("سبب الإلغاء:");
+                if(r) { try { await updateDoc(doc(db, "orders", id), { status: 'cancel_requested', clientCancelReason: r }); alert("تم إرسال الطلب"); openHistory(); } catch(e) { alert("خطأ"); } }
+            }
+
+            function toggleChat() {
+                const w = document.getElementById('chatWindow');
+                if(!currentUser) { document.getElementById('loginModal').style.display = 'flex'; return; }
+                w.style.display = (w.style.display === 'flex') ? 'none' : 'flex';
+                if(w.style.display === 'flex') listenToChat();
+            }
+
+            function listenToChat() {
+                if(!currentUser || chatUnsubscribe) return;
+                chatUnsubscribe = onSnapshot(doc(db, "chats", currentUser.phone), (docSnap) => {
+                    renderChat(docSnap.exists() ? docSnap.data().messages : []);
+                });
+            }
+
+            function renderChat(msgs) {
+                const b = document.getElementById('chatBody'); b.innerHTML = "";
+                msgs.forEach(m => b.innerHTML += `<div style="background:${m.sender==='user'?'#dcf8c6':'white'}; padding:8px 12px; margin:5px; border-radius:10px; width:fit-content; max-width:80%; margin-left:${m.sender==='user'?'auto':'0'}; box-shadow:0 1px 2px rgba(0,0,0,0.1); font-size:13px;">${m.text}</div>`);
+                b.scrollTop = b.scrollHeight;
+            }
+
+            async function sendChatMsg() {
+                let t = document.getElementById('chatInput').value;
+                if(t && currentUser) {
+                    const chatRef = doc(db, "chats", currentUser.phone);
+                    try {
+                        const snap = await getDoc(chatRef);
+                        let msgs = snap.exists() ? snap.data().messages : [];
+                        msgs.push({ sender: 'user', text: t, time: Date.now() });
+                        await setDoc(chatRef, { messages: msgs }, { merge: true });
+                        document.getElementById('chatInput').value = "";
+                    } catch(e) { console.error(e); }
+                }
+            }
+
+            init();
+        </script>
+    </body>
+    </html>
